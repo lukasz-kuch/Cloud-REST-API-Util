@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.AzureMidServerRequest</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description/>
+        <name>AzureMidServerRequest</name>
+        <script><![CDATA[var AzureMidServerRequest = Class.create();
+AzureMidServerRequest.prototype = Object.extendsObject(
+  global.AbstractAjaxProcessor,
+  {
+    executeScriptInclude: function () {
+      gs.info("QQ azure triggered script include request");
+      var automation_api = new sn_automation.AutomationAPI();
+      var util = new MidServerUtil();
+      var serviceAccountData = util.getServiceAccount(
+        this.getParameter('sysparm_serviceAccount')
+      );
+      var probeName = 'AzureScriptIncludeRequest';
+      var loginParams = 'var params = new AzureLoginParams;';
+      var script = this.getParameter('sysparm_script');
+      var jspr = new JavascriptProbe(this.getParameter('sysparm_mid'));
+      jspr.setName(probeName);
+      jspr.setJavascript(loginParams + script);
+      jspr.addParameter('subscriptionId', serviceAccountData.account_id);
+      jspr.addParameter('tenantId', serviceAccountData.credentials.tenant_id);
+      jspr.addParameter('clientId', serviceAccountData.credentials.client_id);
+      jspr.addParameter(
+        'secretKey',
+        automation_api.encrypt(serviceAccountData.credentials.secret_key)
+      );
+
+      jspr.addParameter('skip_sensor', 'true');
+      jspr.create();
+
+      return util.awaitEccResponse(probeName);
+    },
+
+    executeAPi: function () {
+      gs.info("QQ azure triggered script include request");
+      var automation_api = new sn_automation.AutomationAPI();
+      var util = new MidServerUtil();
+      var serviceAccountData = util.getServiceAccount(
+        this.getParameter('sysparm_serviceAccount')
+      );
+      var probeName = 'AzureRestApi';
+      var script =
+        'var req = new AzureMidApiRequest(); res = req.' +
+        this.getParameter('sysparm_method') +
+        '(' +
+        this.getParameter('sysparm_payload') +
+        ');';
+      var jspr = new JavascriptProbe(this.getParameter('sysparm_mid'));
+      jspr.setName(probeName);
+      jspr.setJavascript(script);
+      jspr.addParameter('subscriptionId', serviceAccountData.account_id);
+      jspr.addParameter('tenantId', serviceAccountData.credentials.tenant_id);
+      jspr.addParameter('clientId', serviceAccountData.credentials.client_id);
+      jspr.addParameter('endpoint', this.getParameter('sysparm_endpoint'));
+      jspr.addParameter(
+        'secretKey',
+        automation_api.encrypt(serviceAccountData.credentials.secret_key)
+      );
+      jspr.addParameter('skip_sensor', 'true');
+      jspr.create();
+
+      return util.awaitEccResponse(probeName);
+    },
+    type: 'AzureMidServerRequest'
+  }
+);
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-09-23 12:09:42</sys_created_on>
+        <sys_id>41fb2f8d07f6f0509eebf48f7c1ed066</sys_id>
+        <sys_mod_count>12</sys_mod_count>
+        <sys_name>AzureMidServerRequest</sys_name>
+        <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>sys_script_include_41fb2f8d07f6f0509eebf48f7c1ed066</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-09-23 13:41:01</sys_updated_on>
+    </sys_script_include>
+</record_update>

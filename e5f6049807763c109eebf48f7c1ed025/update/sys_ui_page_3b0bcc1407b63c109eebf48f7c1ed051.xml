@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[function addServiceAccounts() {
+  var provider = gel('provider').value;
+  var serviceAccountLookUp = gel('lookup.service_account');
+  serviceAccountLookUp.setAttribute(
+    'onclick',
+    "mousePositionSave(event); reflistOpen( 'service_account', 'not', 'cmdb_ci_cloud_service_account', '', 'false','QUERY:active=true', 'datacenter_typeLIKE" +
+      provider +
+      "', '')"
+  );
+}
+
+// displaying tab content
+$j('#api_client_tab').hide();
+$j(document).ready(function () {
+  $j('#tabs li').click(function () {
+    $j('#tabs li').removeClass('active');
+    $j(this).addClass('active');
+    $j('.tab-content').hide();
+    var selected_tab = $j(this).find('a').attr('href');
+    $j(selected_tab).fadeIn();
+    //  At the end, we add return false so that the click on the link is not executed
+    return false;
+  });
+});
+
+// onload actions
+$j('#request_body').hide();
+$j('#spinner').hide();
+$j('#response').hide();
+
+// on checkbox check action
+$j('#checkbox').click(function () {
+  if ($j(this).is(':checked')) {
+    $j('#request_body').show();
+  } else {
+    $j('#request_body').hide();
+  }
+});
+
+function onClickScripInclude() {
+  $j('#spinner').show();
+  $j('#response').empty();
+  $j('#response').hide();
+  var midServerName = gel('sys_display.mid_server').value;
+  var serviceAccountSysId = gel('service_account').value;
+  var script = gel('code').value;
+  var provider = {
+    VCENTER: 'VMWareMidServerRequest',
+    AZURE: 'AzureMidServerRequest'
+  };
+  var grAjax = new GlideAjax(provider[gel('provider').value]);
+  grAjax.addParam('sysparm_name', 'executeScriptInclude');
+  grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
+  grAjax.addParam('sysparm_mid', midServerName);
+  grAjax.addParam('sysparm_script', script);
+  grAjax.getXMLAnswer(getResponse);
+
+  function getResponse(response) {
+    var parsedResponse = JSON.parse(response);
+    $j('#spinner').hide();
+    $j('#response').text(JSON.stringify(parsedResponse, undefined, 4)).change();
+    $j('#response').show();
+  }
+}
+
+function onClickApi() {
+  $j('#spinner').show();
+  $j('#response').empty();
+  $j('#response').hide();
+  var midServerName = gel('sys_display.mid_server').value;
+  var serviceAccountSysId = gel('service_account').value;
+  var endpoint = gel('endpoint').value;
+  var method = gel('method').value;
+  var payload = gel('request_body').value;
+  var provider = {
+    VCENTER: 'VMWareMidServerRequest',
+    AZURE: 'AzureMidServerRequest'
+  };
+  var grAjax = new GlideAjax(provider[gel('provider').value]);
+  grAjax.addParam('sysparm_name', 'executeAPi');
+  grAjax.addParam('sysparm_method', method);
+  grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
+  grAjax.addParam('sysparm_mid', midServerName);
+  grAjax.addParam('sysparm_endpoint', endpoint);
+  if (payload) grAjax.addParam('sysparm_payload', payload);
+  grAjax.getXMLAnswer(getResponse);
+
+  function getResponse(response) {
+    $j('#spinner').hide();
+    var parsedResponse = JSON.parse(response);
+    $j('#response').text(JSON.stringify(parsedResponse, undefined, 4)).change();
+    $j('#response').show();
+  }
+}
+
+function prettifyJson() {
+  var ugly = $j('#jsonData').val();
+  try {
+    var obj = JSON.parse(ugly);
+    var pretty = JSON.stringify(obj, undefined, 4);
+    $j('#jsonData').val(pretty).change();
+  } catch (err) {
+    alert(err);
+  }
+}
+
+function clearResponse() {
+  $j('#response').empty();
+}
+]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint/>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+  <html>
+
+  <head>
+    <style type="text/css">
+      h1 {
+        text-align: center;
+        padding: 10px;
+      }
+
+      #jsonData {
+        height: 200px;
+      }
+
+      #code::placeholder {
+        color: red;
+      }
+
+      .tab-content,
+      #prettify {
+        margin-top: 10px;
+      }
+
+      .loader {
+        margin: 0 auto;
+        border: 10px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 10px solid #3498db;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>MIDServer REST API Executor</h1>
+    <div class="col-sm-3">
+      <div class="panel-group">
+        <div class="panel panel-info">
+          <div class="panel-heading">Cloud Credentials</div>
+          <div id="credentialPanel" class="panel-body">
+            <div class="form-group">
+              <label>Provider: </label>
+              <select name="provider" id="provider" class="form-control" onChange="addServiceAccounts()">
+                <option value="" selected="true" disabled="true">
+                  --Select Provider--
+                </option>
+                <option>VCENTER</option>
+                <option>AZURE</option>
+                <option disabled="true">AWS</option>
+                <option disabled="true">GOOGLE</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Service Account: </label>
+              <g:ui_reference name="service_account" id="service_account" table="cmdb_ci_cloud_service_account"
+                completer="AJAXTableCompleter" query="nameLIKENone" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-group">
+        <div class="panel panel-info">
+          <div class="panel-heading">Mid Server</div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label>MID Server: </label>
+              <g:ui_reference name="mid_server" id="mid_server" table="ecc_agent" query="status=Up" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <div class="panel-group">
+        <div class="panel panel-primary">
+          <div class="panel-heading">API Request</div>
+          <div class="panel-body">
+            <ul id="tabs" class="nav nav-tabs">
+              <li class="active">
+                <a data-toggle="tab" href="#mid_script_tab" rel="mid_script_tab">MID Server Scripts Include</a>
+              </li>
+              <li>
+                <a data-toggle="tab" href="#api_client_tab" rel="api_client_tab">API Client</a>
+              </li>
+            </ul>
+            <div class="tab-container">
+              <div id="mid_script_tab" class="tab-content">
+                <form>
+                  <div class="form-group" id="mid_script">
+                    <textarea id="code" class="form-control" required="true"
+                      placeholder="Please use 'params' as a parameter when calling MidServer script include -> e.g. new exampleMidScriptInclude(params)">
+                      </textarea>
+                  </div>
+                  <div>
+                    <button id="execute" type="button" class="btn btn-primary" onclick="onClickScripInclude()">
+                      ${gs.getMessage('Execute')}
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div id="api_client_tab" class="tab-content">
+                <form>
+                  <div class="row">
+                    <div class="form-group col-sm-2">
+                      <select id="method" class="form-control" required="true">
+                        <option value="" selected="true" disabled="true" hidden="true">
+                          METHOD
+                        </option>
+                        <option>GET</option>
+                        <option>POST</option>
+                        <option>PUT</option>
+                        <option>PATCH</option>
+                        <option>DELETE</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-sm-10">
+                      <div class="input-group">
+                        <input type="text" id="endpoint" class="form-control" placeholder="Endpoint URL"
+                          required="true" />
+                        <div class="input-group-btn">
+                          <button id="send" class="btn btn-success" type="button" onclick="onClickApi()">
+                            Send
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="checkbox">
+                    <label><input id="checkbox" type="checkbox" value="" />Request
+                      Body (JSON)</label>
+                  </div>
+                </form>
+                <div id="request_body" class="form-group">
+                  <textarea class="form-control" id="jsonData"></textarea>
+                  <div>
+                    <button id="prettify" type="button" class="btn btn-danger" onclick="prettifyJson()">
+                      Prettify
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-group">
+        <div class="panel panel-success">
+          <div class="panel-heading">Response</div>
+          <div class="panel-body">
+            <div id="spinner" class="loader"></div>
+            <div>
+              <pre id="response"></pre>
+            </div>
+            <div>
+              <button id="clear" type="submit" class="btn btn-danger" onclick="clearResponse()">
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  </html>
+</j:jelly>
+]]></html>
+        <name>mid_server_api</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-09-20 12:06:18</sys_created_on>
+        <sys_id>3b0bcc1407b63c109eebf48f7c1ed051</sys_id>
+        <sys_mod_count>229</sys_mod_count>
+        <sys_name>mid_server_api</sys_name>
+        <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>sys_ui_page_3b0bcc1407b63c109eebf48f7c1ed051</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-09-24 08:43:00</sys_updated_on>
+    </sys_ui_page>
+</record_update>
