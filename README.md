@@ -12,7 +12,7 @@ MidServer Script Include functionality works based on OOTB ServiceNow Cloud API 
 
 ### MID Server Script Includes
 
-![alt text](https://github.com/lukasz-kuch/MID-Server-API-Client/blob/main/MIDServerAPIClient.png)
+![alt text](https://github.com/lukasz-kuch/private-stuff/blob/main/api_client.png)
 
 * populate your login credentials -> chooe provider and related cloud service account
 * choose MID Server
@@ -27,7 +27,7 @@ res = req.ExampleFunction()
 ```
 ### API Request
 
-![alt text](https://github.com/lukasz-kuch/MID-Server-API-Client/blob/main/MIDServerAPIClient_v2.png)
+![alt text](https://github.com/lukasz-kuch/private-stuff/blob/main/script_include.png)
 
 * populate your login credentials -> chooe provider and related cloud service account
 * choose MID Server
