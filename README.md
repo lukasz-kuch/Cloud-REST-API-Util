@@ -6,3 +6,24 @@ MidServer Script Include functionality works based on OOTB ServiceNow Cloud API 
 ##  Requirements
 * running MID Server that has access to a cloud environment
 * Cloud Service Account (e.g. Azure AWS, VMWARE...)
+
+## Usage of
+
+* MID Server Script Includes
+
+![alt text](https://github.com/lukasz-kuch/MID-Server-API-Client/blob/main/MIDServerAPIClient.png)
+
+* populate your login credentials -> chooe provider and related cloud service account
+* choose MID Server
+* In MID Server Script Include tab put you line of code to call your intressted script
+
+#### IMPORTANT
+Please call the MID Server Script include using `params`as a parameter as it is required to pass login credential to MID Server CloudAPIBase script include. 
+See following example:
+```javascript
+var req = new ExampleScriptInclude(params)
+res = req.ExampleFunction()
+```
+* API Request
+
+![alt text](https://github.com/lukasz-kuch/MID-Server-API-Client/blob/main/MIDServerAPIClient_v2.png)
