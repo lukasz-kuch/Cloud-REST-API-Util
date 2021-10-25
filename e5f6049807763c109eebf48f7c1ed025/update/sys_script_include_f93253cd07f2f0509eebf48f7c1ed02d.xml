@@ -1,103 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
     <sys_script_include action="INSERT_OR_UPDATE">
-        <access>package_private</access>
+        <access>public</access>
         <active>true</active>
         <api_name>global.MidServerUtil</api_name>
         <caller_access/>
-        <client_callable>false</client_callable>
+        <client_callable>true</client_callable>
         <description/>
         <name>MidServerUtil</name>
         <script><![CDATA[var MidServerUtil = Class.create();
-MidServerUtil.prototype = {
-    initialize: function() {
-    },
+MidServerUtil.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+  getServiceAccount: function (serviceAccountSysId) {
+    var saGR = new GlideRecord('cmdb_ci_cloud_service_account');
+    saGR.get(serviceAccountSysId);
 
-    getServiceAccount: function (serviceAccountSysId) {
-      var saGR = new GlideRecord('cmdb_ci_cloud_service_account');
-      saGR.get(serviceAccountSysId);
+    var creds = this._getCredentials(saGR.discovery_credentials);
 
-      var creds = this._getCredentials(saGR.discovery_credentials);
+    return {
+      account_id: saGR.account_id.toString(),
+      datacenter_url: saGR.datacenter_url.toString(),
+      credentials: creds
+    };
+  },
 
-      return {
-        account_id: saGR.account_id.toString(),
-        datacenter_url: saGR.datacenter_url.toString(),
-        credentials: creds
-      };
-    },
+  getAWSRegions: function () {
+    var regions = [];
+    var gr = new GlideRecord('cmp_discovery_ldc_config');
+    gr.addQuery('service_account', this.getParameter('sysparm_serviceAccount'));
+    gr.query();
+    while (gr.next()) {
+      regions.push(gr.getDisplayValue('ldc'));
+    }
+    return JSON.stringify(regions);
+  },
 
-    _getCredentials: function (credGR) {
-      var credsObj = {};
-      var credsAttr = [
-        'email',
-        'access_key',
-        'user_name',
-        'password',
-        'tenant_id',
-        'client_id',
-        'secret_key'
-      ];
-      credsAttr.forEach(function (attr) {
-        if (credGR[attr].toString()) {
-          credsObj[attr] = this._checkIfMasked(attr, credGR[attr].toString());
-        }
-      }, this);
-      return credsObj;
-
-    },
-
-    _checkIfMasked: function (type, item) {
-      var encrypter = new GlideEncrypter();
-      return type == 'password' || type == 'secret_key'
-        ? encrypter.decrypt(item)
-        : item;
-    },
-
-    _getXMLResponse: function (name, currentDate) {
-      var date = currentDate.split(' ');
-      var ecc = new GlideRecord('ecc_queue');
-      ecc.orderByDesc('sys_created_on');
-      ecc.addEncodedQuery(
-        'sys_created_on>javascript:gs.dateGenerate("' +
-          date[0] +
-          '", "' +
-          date[1] +
-          '")'
-      );
-      ecc.addQuery('topic', 'JavascriptProbe');
-      ecc.addQuery('name', name);
-      ecc.addQuery('queue', 'input');
-      ecc.addQuery('state', 'ready');
-      ecc.query();
-      if (ecc.next()) {
-        var response = gs.getXMLText(ecc.payload, '//output');
-        return response;
-      } else {
-        return false;
+  _getCredentials: function (credGR) {
+    var credsObj = {};
+    var credsAttr = [
+      'email',
+      'access_key',
+      'user_name',
+      'password',
+      'tenant_id',
+      'client_id',
+      'secret_key'
+    ];
+    credsAttr.forEach(function (attr) {
+      if (credGR[attr].toString()) {
+        credsObj[attr] = this._checkIfMasked(attr, credGR[attr].toString());
       }
-    },
+    }, this);
+    return credsObj;
+  },
 
-    awaitEccResponse: function (probeName) {
-      var currentTime = gs.nowDateTime();
-      while (!this._getXMLResponse(probeName, currentTime)) {
-        gs.sleep(500);
-      }
-      return this._getXMLResponse(probeName, currentTime);
-    },
+  _checkIfMasked: function (type, item) {
+    var encrypter = new GlideEncrypter();
+    return type == 'password' || type == 'secret_key'
+      ? encrypter.decrypt(item)
+      : item;
+  },
 
-    type: 'MidServerUtil'
-};
+  _getXMLResponse: function (name, currentDate) {
+    var date = currentDate.split(' ');
+    var ecc = new GlideRecord('ecc_queue');
+    ecc.orderByDesc('sys_created_on');
+    ecc.addEncodedQuery(
+      'sys_created_on>javascript:gs.dateGenerate("' +
+        date[0] +
+        '", "' +
+        date[1] +
+        '")'
+    );
+    ecc.addQuery('topic', 'JavascriptProbe');
+    ecc.addQuery('name', name);
+    ecc.addQuery('queue', 'input');
+    ecc.addQuery('state', 'ready');
+    ecc.query();
+    if (ecc.next()) {
+      var response = gs.getXMLText(ecc.payload, '//output');
+      return response;
+    } else {
+      return false;
+    }
+  },
+
+  awaitEccResponse: function (probeName) {
+    var currentTime = gs.nowDateTime();
+    while (!this._getXMLResponse(probeName, currentTime)) {
+      gs.sleep(1000);
+    }
+    return this._getXMLResponse(probeName, currentTime);
+  },
+
+  type: 'MidServerUtil'
+});
 ]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-23 10:17:16</sys_created_on>
         <sys_id>f93253cd07f2f0509eebf48f7c1ed02d</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>12</sys_mod_count>
         <sys_name>MidServerUtil</sys_name>
         <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
         <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_script_include_f93253cd07f2f0509eebf48f7c1ed02d</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-09-23 11:54:17</sys_updated_on>
+        <sys_updated_on>2021-10-11 12:25:42</sys_updated_on>
     </sys_script_include>
 </record_update>

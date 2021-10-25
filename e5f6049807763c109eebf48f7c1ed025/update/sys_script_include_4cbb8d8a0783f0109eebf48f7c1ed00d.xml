@@ -2,13 +2,13 @@
     <sys_script_include action="INSERT_OR_UPDATE">
         <access>public</access>
         <active>true</active>
-        <api_name>global.AzureMidServerRequest</api_name>
+        <api_name>global.AWSMidServerRequest</api_name>
         <caller_access/>
         <client_callable>true</client_callable>
         <description/>
-        <name>AzureMidServerRequest</name>
-        <script><![CDATA[var AzureMidServerRequest = Class.create();
-AzureMidServerRequest.prototype = Object.extendsObject(
+        <name>AWSMidServerRequest</name>
+        <script><![CDATA[var AWSMidServerRequest = Class.create();
+AWSMidServerRequest.prototype = Object.extendsObject(
   global.AbstractAjaxProcessor,
   {
     executeScriptInclude: function () {
@@ -17,20 +17,18 @@ AzureMidServerRequest.prototype = Object.extendsObject(
       var serviceAccountData = util.getServiceAccount(
         this.getParameter('sysparm_serviceAccount')
       );
-      var probeName = 'AzureScriptIncludeRequest';
-      var loginParams = 'var params = new AzureLoginParams;';
+      var probeName = 'AWSScriptIncludeRequest';
+      var loginParams = 'var params = new AWSLoginParams;';
       var script = this.getParameter('sysparm_script');
       var jspr = new JavascriptProbe(this.getParameter('sysparm_mid'));
       jspr.setName(probeName);
       jspr.setJavascript(loginParams + script);
-      jspr.addParameter('subscriptionId', serviceAccountData.account_id);
-      jspr.addParameter('tenantId', serviceAccountData.credentials.tenant_id);
-      jspr.addParameter('clientId', serviceAccountData.credentials.client_id);
+      jspr.addParameter('identity', serviceAccountData.credentials.access_key);
       jspr.addParameter(
         'secretKey',
         automation_api.encrypt(serviceAccountData.credentials.secret_key)
       );
-
+      jspr.addParameter('region', this.getParameter('sysparm_region'));
       jspr.addParameter('skip_sensor', 'true');
       jspr.create();
 
@@ -66,21 +64,21 @@ AzureMidServerRequest.prototype = Object.extendsObject(
 
       return util.awaitEccResponse(probeName);
     },
-    type: 'AzureMidServerRequest'
+    type: 'AWSMidServerRequest'
   }
 );
 ]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2021-09-23 12:09:42</sys_created_on>
-        <sys_id>41fb2f8d07f6f0509eebf48f7c1ed066</sys_id>
-        <sys_mod_count>15</sys_mod_count>
-        <sys_name>AzureMidServerRequest</sys_name>
+        <sys_created_on>2021-10-08 13:19:28</sys_created_on>
+        <sys_id>4cbb8d8a0783f0109eebf48f7c1ed00d</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name>AWSMidServerRequest</sys_name>
         <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
         <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
-        <sys_update_name>sys_script_include_41fb2f8d07f6f0509eebf48f7c1ed066</sys_update_name>
+        <sys_update_name>sys_script_include_4cbb8d8a0783f0109eebf48f7c1ed00d</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-10-04 13:58:27</sys_updated_on>
+        <sys_updated_on>2021-10-18 10:43:14</sys_updated_on>
     </sys_script_include>
 </record_update>
