@@ -12,7 +12,6 @@ VMWareMidServerRequest.prototype = Object.extendsObject(
   global.AbstractAjaxProcessor,
   {
     executeScriptInclude: function () {
-      gs.info("QQ vmware triggered script include request");
       var automation_api = new sn_automation.AutomationAPI();
       var util = new MidServerUtil();
       var serviceAccountData = util.getServiceAccount(
@@ -37,7 +36,6 @@ VMWareMidServerRequest.prototype = Object.extendsObject(
     },
 
     executeAPi: function () {
-      gs.info("QQ vmware triggered api request");
       var automation_api = new sn_automation.AutomationAPI();
       var util = new MidServerUtil();
       var serviceAccountData = util.getServiceAccount(
@@ -74,13 +72,13 @@ VMWareMidServerRequest.prototype = Object.extendsObject(
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-22 12:38:02</sys_created_on>
         <sys_id>99c8a67c07b270509eebf48f7c1ed029</sys_id>
-        <sys_mod_count>68</sys_mod_count>
+        <sys_mod_count>70</sys_mod_count>
         <sys_name>VMWareMidServerRequest</sys_name>
         <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
         <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_script_include_99c8a67c07b270509eebf48f7c1ed029</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-09-23 13:41:11</sys_updated_on>
+        <sys_updated_on>2021-10-08 14:19:55</sys_updated_on>
     </sys_script_include>
 </record_update>
