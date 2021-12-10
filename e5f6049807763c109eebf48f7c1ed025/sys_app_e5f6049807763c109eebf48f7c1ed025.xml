@@ -13,8 +13,8 @@
         <license_definition/>
         <license_model>none</license_model>
         <logo/>
-        <menu display_value="MID Server Util">c998b71107f674509eebf48f7c1ed0e4</menu>
-        <name>MID Server API Client</name>
+        <menu display_value="Cloud REST API Util">2d10789e07d445109eebf48f7c1ed020</menu>
+        <name>Cloud REST API Util</name>
         <private>false</private>
         <restrict_table_access>false</restrict_table_access>
         <runtime_access_tracking/>
@@ -29,15 +29,15 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-20 11:33:29</sys_created_on>
         <sys_id>e5f6049807763c109eebf48f7c1ed025</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>8</sys_mod_count>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-09-24 07:43:58</sys_updated_on>
+        <sys_updated_on>2021-12-10 09:20:13</sys_updated_on>
         <template/>
         <trackable>true</trackable>
         <uninstall_blocked>false</uninstall_blocked>
         <user_role display_value="admin" name="admin">2831a114c611228501d4ea6c309d626d</user_role>
         <vendor/>
         <vendor_prefix/>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </sys_app>
 </record_update>
