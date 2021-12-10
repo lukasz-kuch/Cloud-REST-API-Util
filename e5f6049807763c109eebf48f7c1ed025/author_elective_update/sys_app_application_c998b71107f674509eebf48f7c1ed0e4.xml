@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_application">
+    <sys_app_application action="DELETE">
+        <active>true</active>
+        <category display_value="Custom Applications">e0355b31ef303000a61d5a3615c0fb78</category>
+        <description/>
+        <device_type>browser</device_type>
+        <hint/>
+        <name/>
+        <order>100</order>
+        <roles>admin</roles>
+        <sys_class_name>sys_app_application</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-09-24 07:43:17</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>c998b71107f674509eebf48f7c1ed0e4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>MID Server Util</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>sys_app_application_c998b71107f674509eebf48f7c1ed0e4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-09-24 07:43:17</sys_updated_on>
+        <title>MID Server Util</title>
+        <view_name/>
+    </sys_app_application>
+<sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</application>
+        <file_path/>
+        <instance_id>5340b345dbd337484d2bac44d4961968</instance_id>
+        <instance_name>dev91500</instance_name>
+        <name>sys_app_application_c998b71107f674509eebf48f7c1ed0e4</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_application">
+    <sys_app_application action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category display_value="Custom Applications">e0355b31ef303000a61d5a3615c0fb78</category>
+        <description/>
+        <device_type>browser</device_type>
+        <hint/>
+        <name/>
+        <order>100</order>
+        <roles>admin</roles>
+        <sys_class_name>sys_app_application</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-09-24 07:43:17</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>c998b71107f674509eebf48f7c1ed0e4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>MID Server Util</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>sys_app_application_c998b71107f674509eebf48f7c1ed0e4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-09-24 07:43:17</sys_updated_on>
+        <title>MID Server Util</title>
+        <view_name/>
+    </sys_app_application>
+</record_update>]]></payload>
+        <payload_hash>316936777</payload_hash>
+        <record_name>MID Server Util</record_name>
+        <reverted_from/>
+        <source>904ea09a07d445109eebf48f7c1ed00a</source>
+        <source_table>sys_upgrade_history</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-12-10 09:07:14</sys_created_on>
+        <sys_id>014ee09a07d445109eebf48f7c1ed0ee</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>17da398b95e0000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-12-10 09:07:14</sys_updated_on>
+        <type>Application Menu</type>
+        <update_guid>4d4ee09abcd44510c8ef69c06172bded</update_guid>
+        <update_guid_history>4d4ee09abcd44510c8ef69c06172bded:0,a492400ab450c110a62a923b9d8c3cef:-1488708064,a4a8bf1121f67450df988d9c4ae1089c:1045992237</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="MID Server Util">3b2af416075845109eebf48f7c1ed0b4</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-12-10 09:59:19</sys_created_on>
+        <sys_db_object display_value="" name="sys_app_application">sys_app_application</sys_db_object>
+        <sys_id>307e996f52744a0cbbfb86e3af8c8e04</sys_id>
+        <sys_metadata>c998b71107f674509eebf48f7c1ed0e4</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>MID Server Util</sys_name>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_scope_delete display_value="">2a2a008bd8474e8f80003ca30e5ccfc9</sys_scope_delete>
+        <sys_update_name>sys_app_application_c998b71107f674509eebf48f7c1ed0e4</sys_update_name>
+        <sys_update_version display_value="sys_app_application_c998b71107f674509eebf48f7c1ed0e4">014ee09a07d445109eebf48f7c1ed0ee</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-12-10 09:59:19</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
