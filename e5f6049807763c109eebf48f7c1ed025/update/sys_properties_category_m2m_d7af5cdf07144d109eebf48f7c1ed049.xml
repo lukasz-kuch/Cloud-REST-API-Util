@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties_category_m2m">
+    <sys_properties_category_m2m action="INSERT_OR_UPDATE">
+        <category display_value="Custom UI Page Data Capture Properties">21d073495310230043e4ddeeff7b12fa</category>
+        <order>100</order>
+        <property display_value="cloud_rest_api.providers_scripts" name="cloud_rest_api.providers_scripts">5614852f07f73c909eebf48f7c1ed0d5</property>
+        <sys_class_name>sys_properties_category_m2m</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-12-13 10:37:25</sys_created_on>
+        <sys_id>d7af5cdf07144d109eebf48f7c1ed049</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>cloud_rest_api.provider.Custom UI Page Data Capture Properties</sys_name>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>sys_properties_category_m2m_d7af5cdf07144d109eebf48f7c1ed049</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-12-13 10:37:25</sys_updated_on>
+    </sys_properties_category_m2m>
+</record_update>
