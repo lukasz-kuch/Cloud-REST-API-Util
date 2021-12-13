@@ -4,21 +4,21 @@
         <description>System property that stores JSON object as a value which contains Key/Value pair -&gt; provider and related script include </description>
         <ignore_cache>true</ignore_cache>
         <is_private>true</is_private>
-        <name>cloud_rest_api.provider</name>
+        <name>cloud_rest_api.providers_scripts</name>
         <read_roles/>
         <suffix/>
         <sys_class_name>sys_properties</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-11-19 13:32:51</sys_created_on>
         <sys_id>5614852f07f73c909eebf48f7c1ed0d5</sys_id>
-        <sys_mod_count>2</sys_mod_count>
-        <sys_name>cloud_rest_api.provider</sys_name>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>cloud_rest_api.providers_scripts</sys_name>
         <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
         <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_properties_5614852f07f73c909eebf48f7c1ed0d5</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-12-09 11:51:32</sys_updated_on>
+        <sys_updated_on>2021-12-13 10:44:15</sys_updated_on>
         <type>string</type>
         <value>{"AZURE":"AzureMidServerRequest", "VCENTER": "VMWareMidServerRequest", "AWS":"AWSMidServerRequest"}</value>
         <write_roles/>

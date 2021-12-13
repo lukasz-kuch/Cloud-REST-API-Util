@@ -1,10 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
     <sys_ui_page action="INSERT_OR_UPDATE">
         <category>general</category>
-        <client_script><![CDATA[function addServiceAccounts() {
-  document.getElementById('sys_display.service_account').value = "";
+        <client_script><![CDATA[// get system property and assign resposne to global variable
+var providerScript; // global variable to store system properties in JSON object
+function getSystemProperty() {
+  var ga = new GlideAjax('MidServerUtil');
+  ga.addParam('sysparm_name', 'getProperty');
+  ga.addParam('sysparm_property_name', 'cloud_rest_api.providers_scripts');
+  ga.getXMLAnswer(responseCallback);
+
+  function responseCallback(response) {
+    providerScript = JSON.parse(response);
+  }
+}
+// execute onLoad glide ajax function
+addLoadEvent(function () {
+  getSystemProperty();
+});
+
+// displaying tab content
+$j('#api_client_tab').hide();
+$j(document).ready(function () {
+  $j('#tabs li').click(function () {
+    $j('#tabs li').removeClass('active');
+    $j(this).addClass('active');
+    $j('.tab-content').hide();
+    var selected_tab = $j(this).find('a').attr('href');
+    $j(selected_tab).fadeIn();
+    //  At the end, we add return false so that the click on the link is not executed
+    return false;
+  });
+});
+
+// on checkbox check action
+$j('#checkbox').click(function () {
+  if ($j(this).is(':checked')) {
+    $j('#request_body').removeClass('hidden');
+  } else {
+    $j('#request_body').addClass('hidden');
+  }
+});
+
+// get service accunt by provider name
+function addServiceAccounts() {
+  document.getElementById('sys_display.service_account').value = '';
   var provider = gel('provider').value;
-  if(provider != "AWS") $j(".region-container").hide();
+  if (provider != 'AWS') $j('.region-container').hide();
   var serviceAccountLookUp = gel('lookup.service_account');
   serviceAccountLookUp.setAttribute(
     'onclick',
@@ -21,6 +62,7 @@ function setBaseUrl() {
   saGr.get(serviceAccountSysId);
   switch (gel('provider').value) {
     case 'AZURE':
+      $j('#api_client_tab').removeClass('hidden');
       $j('#baseUrl')
         .text(
           'https://management.azure.com/subscriptions/' +
@@ -29,16 +71,16 @@ function setBaseUrl() {
         .change();
       break;
     case 'VCENTER':
+      $j('#api_client_tab').removeClass('hidden');
       $j('#baseUrl')
         .text(saGr.datacenter_url.toString().replace('/sdk', '').trim())
         .change();
       break;
     case 'AWS':
-      $j("#regions").empty();
+      $j('#regions').empty();
       $j('#baseUrl').text('').change();
       getAWSRegion(serviceAccountSysId);
-      $j('.nav li').not('.active').addClass('disabled');
-      $j('.nav li.disabled').find('a').removeAttr('data-toggle');
+      $j('#api_client_tab').addClass('hidden');
       break;
   }
 }
@@ -53,64 +95,31 @@ function getAWSRegion(serviceAccountSysId) {
   function getResponse(response) {
     $j('.region-container').css('display', 'block');
     var regions = JSON.parse(response);
-    $j.each(regions, function(key, value) {
-      $j('#regions').append( $j('<option></option>').text(value) );
-      });
+    $j.each(regions, function (key, value) {
+      $j('#regions').append($j('<option></option>').text(value));
+    });
   }
-
 }
 
-// displaying tab content
-$j('#api_client_tab').hide();
-$j(document).ready(function () {
-  $j('#tabs li').click(function () {
-    $j('#tabs li').removeClass('active');
-    $j(this).addClass('active');
-    $j('.tab-content').hide();
-    var selected_tab = $j(this).find('a').attr('href');
-    $j(selected_tab).fadeIn();
-    //  At the end, we add return false so that the click on the link is not executed
-    return false;
-  });
-});
-
-// onload actions
-$j('#request_body').hide();
-$j('#spinner').hide();
-$j('#response').hide();
-
-// on checkbox check action
-$j('#checkbox').click(function () {
-  if ($j(this).is(':checked')) {
-    $j('#request_body').show();
-  } else {
-    $j('#request_body').hide();
-  }
-});
-
+// execute http request for midserver script include execution
 function onClickScripInclude() {
-  var currentProvider = gel('provider').value;
-  $j('#spinner').show();
+  $j('#spinner').removeClass('hidden');
   $j('#response').empty();
-  $j('#response').hide();
+  $j('#response_container').addClass('hidden');
   var midServerName = gel('sys_display.mid_server').value;
   var serviceAccountSysId = gel('service_account').value;
   var script = gel('code').value;
-  var provider = {
-    VCENTER: 'VMWareMidServerRequest',
-    AZURE: 'AzureMidServerRequest',
-    AWS: 'AWSMidServerRequest'
-  };
-  var grAjax = new GlideAjax(provider[currentProvider]);
+  var grAjax = new GlideAjax(providerScript[gel('provider').value]);
   grAjax.addParam('sysparm_name', 'executeScriptInclude');
   grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
   grAjax.addParam('sysparm_mid', midServerName);
   grAjax.addParam('sysparm_script', script);
-  if (currentProvider == "AWS") grAjax.addParam('sysparm_region', gel('regions').value);
+  if (currentProvider == 'AWS')
+    grAjax.addParam('sysparm_region', gel('regions').value);
   grAjax.getXMLAnswer(getResponse);
 
   function getResponse(response) {
-    $j('#spinner').hide();
+    $j('#spinner').addClass('hidden');
     try {
       var parsedResponse = JSON.parse(response);
     } catch (e) {
@@ -118,24 +127,21 @@ function onClickScripInclude() {
     }
 
     $j('#response').text(JSON.stringify(parsedResponse, undefined, 4)).change();
-    $j('#response').show();
+    $j('#response_container').removeClass('hidden');
   }
 }
 
+// execute api client call
 function onClickApi() {
-  $j('#spinner').show();
+  $j('#spinner').removeClass('hidden');
   $j('#response').empty();
-  $j('#response').hide();
+  $j('#response_container').addClass('hidden');
   var midServerName = gel('sys_display.mid_server').value;
   var serviceAccountSysId = gel('service_account').value;
   var endpoint = gel('endpoint').value;
   var method = gel('method').value;
   var payload = gel('request_body').value;
-  var providers = {
-    VCENTER: 'VMWareMidServerRequest',
-    AZURE: 'AzureMidServerRequest'
-  };
-  var grAjax = new GlideAjax(providers[gel('provider').value]);
+  var grAjax = new GlideAjax(providerScript[gel('provider').value]);
   grAjax.addParam('sysparm_name', 'executeAPi');
   grAjax.addParam('sysparm_method', method);
   grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
@@ -145,17 +151,18 @@ function onClickApi() {
   grAjax.getXMLAnswer(getResponse);
 
   function getResponse(response) {
-    $j('#spinner').hide();
+    $j('#spinner').addClass('hidden');
     try {
       var parsedResponse = JSON.parse(response);
     } catch (e) {
       $j('#response').text(response);
     }
     $j('#response').text(JSON.stringify(parsedResponse, undefined, 4)).change();
-    $j('#response').show();
+    $j('#response_container').removeClass('hidden');
   }
 }
 
+// formatting request body data (JSON)
 function prettifyJson() {
   var ugly = $j('#jsonData').val();
   try {
@@ -167,8 +174,10 @@ function prettifyJson() {
   }
 }
 
+// empty response
 function clearResponse() {
   $j('#response').empty();
+  $j('#response_container').addClass('hidden');
 }
 ]]></client_script>
         <description/>
@@ -180,6 +189,10 @@ function clearResponse() {
 
   <head>
     <style type="text/css">
+      div.hidden {
+        display: none
+      }
+
       h1 {
         text-align: center;
         padding: 10px;
@@ -272,13 +285,13 @@ function clearResponse() {
       <div class="panel-group">
         <div class="panel panel-primary">
           <div class="panel-heading">API Request</div>
-          <div class="panel-body">
+          <div class="panel-body" id="tab-panel">
             <ul id="tabs" class="nav nav-tabs">
-              <li class="active">
+              <li class="tab_list_script active" data-toggle="tooltip"  data-placement="top" title="AZURE, VCENTER, AWS">
                 <a data-toggle="tab" href="#mid_script_tab" rel="mid_script_tab">MID Server Scripts Include</a>
               </li>
-              <li>
-                <a data-toggle="tab" href="#api_client_tab" rel="api_client_tab">API Client</a>
+              <li class="tab_list_api" data-toggle="tooltip"  data-placement="top" title="AZURE, VCENTER">
+                <a id="api_tab" data-toggle="tab" href="#api_client_tab" rel="api_client_tab">API Client</a>
               </li>
             </ul>
             <div class="tab-container">
@@ -333,7 +346,7 @@ function clearResponse() {
                       Body (JSON)</label>
                   </div>
                 </form>
-                <div id="request_body" class="form-group">
+                <div id="request_body" class="form-group hidden">
                   <textarea class="form-control" id="jsonData"></textarea>
                   <div>
                     <button id="prettify" type="button" class="btn btn-danger" onclick="prettifyJson()">
@@ -350,8 +363,8 @@ function clearResponse() {
         <div class="panel panel-success">
           <div class="panel-heading">Response</div>
           <div class="panel-body">
-            <div id="spinner" class="loader"></div>
-            <div>
+            <div id="spinner" class="loader hidden"></div>
+            <div id="response_container" class="hidden">
               <pre id="response"></pre>
             </div>
             <div>
@@ -374,13 +387,13 @@ function clearResponse() {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-20 12:06:18</sys_created_on>
         <sys_id>3b0bcc1407b63c109eebf48f7c1ed051</sys_id>
-        <sys_mod_count>449</sys_mod_count>
+        <sys_mod_count>493</sys_mod_count>
         <sys_name>cloud_rest_api</sys_name>
         <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
         <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_ui_page_3b0bcc1407b63c109eebf48f7c1ed051</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-12-10 09:15:26</sys_updated_on>
+        <sys_updated_on>2021-12-13 13:38:33</sys_updated_on>
     </sys_ui_page>
 </record_update>
