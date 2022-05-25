@@ -45,12 +45,11 @@ VMWareMidServerRequest.prototype = Object.extendsObject(
       var script =
         'var req = new VsphereMidApiRequest(); res = req.' +
         this.getParameter('sysparm_method') +
-        '(' +
-        this.getParameter('sysparm_payload') +
-        ');';
+        '();';
       var jspr = new JavascriptProbe(this.getParameter('sysparm_mid'));
       jspr.setName(probeName);
       jspr.setJavascript(script);
+	  jspr.addParameter('payload', this.getParameter('sysparm_payload'));
       jspr.addParameter('baseUrl', serviceAccountData.datacenter_url);
       jspr.addParameter('endpoint', this.getParameter('sysparm_endpoint'));
       jspr.addParameter('username', serviceAccountData.credentials.user_name);
@@ -72,13 +71,13 @@ VMWareMidServerRequest.prototype = Object.extendsObject(
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-22 12:38:02</sys_created_on>
         <sys_id>99c8a67c07b270509eebf48f7c1ed029</sys_id>
-        <sys_mod_count>70</sys_mod_count>
+        <sys_mod_count>71</sys_mod_count>
         <sys_name>VMWareMidServerRequest</sys_name>
-        <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
-        <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_script_include_99c8a67c07b270509eebf48f7c1ed029</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-10-08 14:19:55</sys_updated_on>
+        <sys_updated_on>2022-05-25 06:04:36</sys_updated_on>
     </sys_script_include>
 </record_update>
