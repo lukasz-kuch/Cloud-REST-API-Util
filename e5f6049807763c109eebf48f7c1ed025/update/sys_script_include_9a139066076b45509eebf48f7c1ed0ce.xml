@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.AWSSigningRequest</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>AWSSigningRequest</name>
+        <script><![CDATA[var AWSSigningRequest = Class.create();
+AWSSigningRequest.prototype = {
+    initialize: function(params, payload) {
+        this.parameters = JSON.parse(params);
+        this.Payload = payload || "";
+        this.UriPath = '/';
+        this.Endpoint = this.parameters.endpoint.toString();
+        this.CanonicalQueryString = this.Endpoint.substring(this.Endpoint.indexOf('?') + 1);
+        this.Date = this.parameters.date.toString();
+        this.AccessID = this.parameters.accessId.toString();
+        this.Host = this.parameters.baseUrl.substring(8).toString();
+        this.Service = "ec2";
+        this.Region = this.parameters.region.toString();
+        this.SecretKey = this.parameters.secretKey.toString();
+        this.Scope = this.Date.substring(0, 8) + '/' + this.Region + '/' + this.Service + '/' + 'aws4_request';
+        this.SignedHeaders = 'host;x-amz-date';
+        this.CryptoJS = new x_fstfs_fj_cmp.Crypto().CryptoJS;
+
+    },
+
+    createCanonicalRequest: function() {
+        var hashedPayload = this.CryptoJS.SHA256(this.Payload).toString(this.CryptoJS.enc.Hex);
+        var hash = hashedPayload.toLowerCase();
+        var CanonicalHeaders = this.createCanonicalHeader();
+        //var CanonicalURI =  encodeURIComponent(this.UriPath);
+        return 'GET' + '\n' + this.UriPath + '\n' + this.CanonicalQueryString + '\n' + CanonicalHeaders + '\n' + this.SignedHeaders + '\n' + hash;
+    },
+
+    createCanonicalHeader: function() {
+        var headers = {
+            'host': this.Host,
+            'x-amz-date': this.Date
+        };
+        return Object.keys(headers).map(function(key) {
+            return key + ':' + headers[key];
+        }).join('\n').concat('\n');
+    },
+
+    getStringToSignIn: function() {
+        var hashCanonical = this.CryptoJS.SHA256(this.createCanonicalRequest()).toString(this.CryptoJS.enc.Hex);
+        var hashLower = hashCanonical.toLowerCase();
+        return 'AWS4-HMAC-SHA256' + '\n' + this.Date + '\n' + this.Scope + '\n' + hashLower;
+    },
+
+    getSigningKey: function() {
+        var kDate = this.CryptoJS.HmacSHA256(this.Date.substring(0, 8), "AWS4" + encodeURI(this.SecretKey));
+        var kRegion = this.CryptoJS.HmacSHA256(this.Region, kDate);
+        var kService = this.CryptoJS.HmacSHA256(this.Service, kRegion);
+        var kSigning = this.CryptoJS.HmacSHA256("aws4_request", kService);
+
+        return kSigning;
+    },
+
+    getSignature: function() {
+        var signKey = this.getSigningKey();
+        var stringToSign = this.getStringToSignIn();
+        return this.CryptoJS.algo.HMAC.create(this.CryptoJS.algo.SHA256, signKey).update(stringToSign).finalize().toString(this.CryptoJS.enc.Hex);
+    },
+
+    setAuthorization: function() {
+        var signature = this.getSignature();
+        return 'AWS4-HMAC-SHA256 Credential=' + this.AccessID + '/' + this.Scope + ', SignedHeaders=' + this.SignedHeaders + ', Signature=' + signature;
+    },
+
+    type: 'AWSSigningRequest'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-21 15:11:15</sys_created_on>
+        <sys_id>9a139066076b45509eebf48f7c1ed0ce</sys_id>
+        <sys_mod_count>29</sys_mod_count>
+        <sys_name>AWSSigningRequest</sys_name>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>sys_script_include_9a139066076b45509eebf48f7c1ed0ce</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-24 13:55:59</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="ecc_agent_script_include">
+    <ecc_agent_script_include action="DELETE">
+        <active>true</active>
+        <description/>
+        <name>AWSMidApiRequest</name>
+        <script><![CDATA[var AWSMidApiRequest = Class.create();
+AWSMidApiRequest.prototype = {
+
+    HTTPRequest: Packages.com.glide.communications.HTTPRequest,
+	xmlHelper: new XMLHelper(),
+    initialize: function() {
+		this.date = probe.getParameter("date");
+		this.endpoint = probe.getParameter('endpoint');
+		this.authorization = probe.getParameter("authorization");
+		this.paylod = probe.getParameter("payload");
+        this.baseUrl = probe.getParameter("baseUrl");
+    },
+
+    GET: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.authorization);
+        //request.addHeader("Accept", "application/json");
+        request.addHeader("X-Amz-Date", this.date);
+        var response = request.get();
+        var responseBody = this.getResponse(response);
+
+        return responseBody;
+    },
+
+    POST: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.getToken());
+        request.addHeader("Content-Type", "application/json");
+        var response = request.post();
+        var responseBody = this.getResponse(response);
+
+        return JSON.stringify(responseBody);
+    },
+
+    PUT: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.getToken());
+        request.addHeader("Content-Type", "application/json");
+        var response = request.get();
+        var responseBody = this.getResponse(response);
+
+        return JSON.stringify(responseBody);
+    },
+
+    PATCH: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.getToken());
+        request.addHeader("Content-Type", "application/json");
+        var response = request.get();
+        var responseBody = this.getResponse(response);
+
+        return JSON.stringify(responseBody);
+    },
+
+    DELETE: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.getToken());
+        request.addHeader("Content-Type", "application/json");
+        var response = request.get();
+        var responseBody = this.getResponse(response);
+
+        return JSON.stringify(responseBody);
+    },
+
+    getResponse: function(response) {
+        var jsonObj;
+        var status = response.getStatusCode();
+        var responseBody = response.getBody();
+// 		var helper = this.xmlHelper(responseBody.toString());
+// 		var js_responseBody = helper.toObject();
+// 		var json_responseBody = new JSON().encode(js_responseBody);
+		var json_responseBody = gs.xmlToJSON(responseBody.toString());
+        if (status < "200" || status >= "300") {
+            return JSON.stringify({
+                "Failed with status code": status,
+                ErrorMessage: responseBody,
+            });
+        } else {
+            jsonObj = json_responseBody ? responseBody : "";
+            return jsonObj;
+        }
+    },
+
+    getToken: function() {
+        var tokenMgr = new Packages.com.snc.cmp.connector.util.AzureTokenManager.getTokenManager();
+        var token;
+        try {
+            token = tokenMgr.getToken(this.clientId, this.tenantId, this.secretKey);
+        } catch (e) {
+            var msg =
+                e instanceof Packages.java.lang.RuntimeException ?
+                e.getMessage() :
+                e.toString();
+            throw ms.log(msg);
+        }
+        return token;
+    },
+
+    type: "AWSMidApiRequest"
+};]]></script>
+        <sys_class_name>ecc_agent_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-24 19:08:01</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>521668e7076f4d509eebf48f7c1ed05a</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>AWSMidApiRequest</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>ecc_agent_script_include_521668e7076f4d509eebf48f7c1ed05a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-24 19:16:43</sys_updated_on>
+    </ecc_agent_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</application>
+        <file_path/>
+        <instance_id>5340b345dbd337484d2bac44d4961968</instance_id>
+        <instance_name>dev91500</instance_name>
+        <name>ecc_agent_script_include_521668e7076f4d509eebf48f7c1ed05a</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update sys_domain="global" table="ecc_agent_script_include"&gt;&lt;ecc_agent_script_include action="INSERT_OR_UPDATE"&gt;&lt;active&gt;true&lt;/active&gt;&lt;description/&gt;&lt;name&gt;AWSMidApiRequest&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var AWSMidApiRequest = Class.create();
+AWSMidApiRequest.prototype = {
+
+    HTTPRequest: Packages.com.glide.communications.HTTPRequest,
+	xmlHelper: new XMLHelper(),
+    initialize: function() {
+		this.date = probe.getParameter("date");
+		this.endpoint = probe.getParameter('endpoint');
+		this.authorization = probe.getParameter("authorization");
+		this.paylod = probe.getParameter("payload");
+        this.baseUrl = probe.getParameter("baseUrl");
+    },
+
+    GET: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.authorization);
+        //request.addHeader("Accept", "application/json");
+        request.addHeader("X-Amz-Date", this.date);
+        var response = request.get();
+        var responseBody = this.getResponse(response);
+
+        return responseBody;
+    },
+
+    POST: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.getToken());
+        request.addHeader("Content-Type", "application/json");
+        var response = request.post();
+        var responseBody = this.getResponse(response);
+
+        return JSON.stringify(responseBody);
+    },
+
+    PUT: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.getToken());
+        request.addHeader("Content-Type", "application/json");
+        var response = request.get();
+        var responseBody = this.getResponse(response);
+
+        return JSON.stringify(responseBody);
+    },
+
+    PATCH: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.getToken());
+        request.addHeader("Content-Type", "application/json");
+        var response = request.get();
+        var responseBody = this.getResponse(response);
+
+        return JSON.stringify(responseBody);
+    },
+
+    DELETE: function() {
+        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+        request.addHeader("Authorization", this.getToken());
+        request.addHeader("Content-Type", "application/json");
+        var response = request.get();
+        var responseBody = this.getResponse(response);
+
+        return JSON.stringify(responseBody);
+    },
+
+    getResponse: function(response) {
+        var jsonObj;
+        var status = response.getStatusCode();
+        var responseBody = response.getBody();
+// 		var helper = this.xmlHelper(responseBody.toString());
+// 		var js_responseBody = helper.toObject();
+// 		var json_responseBody = new JSON().encode(js_responseBody);
+		var json_responseBody = gs.xmlToJSON(responseBody.toString());
+        if (status &lt; "200" || status &gt;= "300") {
+            return JSON.stringify({
+                "Failed with status code": status,
+                ErrorMessage: responseBody,
+            });
+        } else {
+            jsonObj = json_responseBody ? responseBody : "";
+            return jsonObj;
+        }
+    },
+
+    getToken: function() {
+        var tokenMgr = new Packages.com.snc.cmp.connector.util.AzureTokenManager.getTokenManager();
+        var token;
+        try {
+            token = tokenMgr.getToken(this.clientId, this.tenantId, this.secretKey);
+        } catch (e) {
+            var msg =
+                e instanceof Packages.java.lang.RuntimeException ?
+                e.getMessage() :
+                e.toString();
+            throw ms.log(msg);
+        }
+        return token;
+    },
+
+    type: "AWSMidApiRequest"
+};]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;ecc_agent_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2022-05-24 19:08:01&lt;/sys_created_on&gt;&lt;sys_domain&gt;global&lt;/sys_domain&gt;&lt;sys_domain_path&gt;/&lt;/sys_domain_path&gt;&lt;sys_id&gt;521668e7076f4d509eebf48f7c1ed05a&lt;/sys_id&gt;&lt;sys_mod_count&gt;3&lt;/sys_mod_count&gt;&lt;sys_name&gt;AWSMidApiRequest&lt;/sys_name&gt;&lt;sys_overrides/&gt;&lt;sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025"&gt;e5f6049807763c109eebf48f7c1ed025&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Cloud REST API Util"&gt;e5f6049807763c109eebf48f7c1ed025&lt;/sys_scope&gt;&lt;sys_update_name&gt;ecc_agent_script_include_521668e7076f4d509eebf48f7c1ed05a&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2022-05-24 19:16:43&lt;/sys_updated_on&gt;&lt;/ecc_agent_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>299138845</payload_hash>
+        <record_name>AWSMidApiRequest</record_name>
+        <reverted_from/>
+        <source>29437816071845109eebf48f7c1ed01b</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-24 19:16:43</sys_created_on>
+        <sys_id>f91860ef076f4d509eebf48f7c1ed0e7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>180f78003950000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-24 19:16:43</sys_updated_on>
+        <type>MID Server Script Include</type>
+        <update_guid>711860efac6f4d500d4dc9fa758706e7</update_guid>
+        <update_guid_history>711860efac6f4d500d4dc9fa758706e7:299138845,ddc760ef0e6f4d50158b4fbcc9cbaaf2:1842629725,f7c6a823c3af4d508e3d3093d52b61b1:-325207353,121668e77d6f4d50d1631bb88d509e5d:1034631617</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="AWSMidApiRequest">aaa86c2707af4d509eebf48f7c1ed057</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-24 19:19:14</sys_created_on>
+        <sys_db_object display_value="" name="ecc_agent_script_include">ecc_agent_script_include</sys_db_object>
+        <sys_id>a991c6eca70f4efa8a9f02a238657469</sys_id>
+        <sys_metadata>521668e7076f4d509eebf48f7c1ed05a</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>AWSMidApiRequest</sys_name>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_scope_delete display_value="">2a2a008bd8474e8f80003ca30e5ccfc9</sys_scope_delete>
+        <sys_update_name>ecc_agent_script_include_521668e7076f4d509eebf48f7c1ed05a</sys_update_name>
+        <sys_update_version display_value="ecc_agent_script_include_521668e7076f4d509eebf48f7c1ed05a">f91860ef076f4d509eebf48f7c1ed0e7</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-24 19:19:14</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

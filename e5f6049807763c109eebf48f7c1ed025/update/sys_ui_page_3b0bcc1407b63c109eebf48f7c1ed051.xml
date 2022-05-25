@@ -4,180 +4,184 @@
         <client_script><![CDATA[// get system property and assign resposne to global variable
 var providerScript; // global variable to store system properties in JSON object
 function getSystemProperty() {
-  var ga = new GlideAjax('MidServerUtil');
-  ga.addParam('sysparm_name', 'getProperty');
-  ga.addParam('sysparm_property_name', 'cloud_rest_api.providers_scripts');
-  ga.getXMLAnswer(responseCallback);
+    var ga = new GlideAjax('MidServerUtil');
+    ga.addParam('sysparm_name', 'getProperty');
+    ga.addParam('sysparm_property_name', 'cloud_rest_api.providers_scripts');
+    ga.getXMLAnswer(responseCallback);
 
-  function responseCallback(response) {
-    providerScript = JSON.parse(response);
-  }
+    function responseCallback(response) {
+        providerScript = JSON.parse(response);
+    }
 }
 // execute onLoad glide ajax function
-addLoadEvent(function () {
-  getSystemProperty();
+addLoadEvent(function() {
+    getSystemProperty();
 });
 
 // displaying tab content
 $j('#api_client_tab').hide();
-$j(document).ready(function () {
-  $j('#tabs li').click(function () {
-    $j('#tabs li').removeClass('active');
-    $j(this).addClass('active');
-    $j('.tab-content').hide();
-    var selected_tab = $j(this).find('a').attr('href');
-    $j(selected_tab).fadeIn();
-    //  At the end, we add return false so that the click on the link is not executed
-    return false;
-  });
+$j(document).ready(function() {
+    $j('#tabs li').click(function() {
+        $j('#tabs li').removeClass('active');
+        $j(this).addClass('active');
+        $j('.tab-content').hide();
+        var selected_tab = $j(this).find('a').attr('href');
+        $j(selected_tab).fadeIn();
+        //  At the end, we add return false so that the click on the link is not executed
+        return false;
+    });
 });
 
 // on checkbox check action
-$j('#checkbox').click(function () {
-  if ($j(this).is(':checked')) {
-    $j('#request_body').removeClass('hidden');
-  } else {
-    $j('#request_body').addClass('hidden');
-  }
+$j('#checkbox').click(function() {
+    if ($j(this).is(':checked')) {
+        $j('#request_body').removeClass('hidden');
+    } else {
+        $j('#request_body').addClass('hidden');
+    }
 });
 
 // get service accunt by provider name
 function addServiceAccounts() {
-  document.getElementById('sys_display.service_account').value = '';
-  var provider = gel('provider').value;
-  if (provider != 'AWS') $j('.region-container').hide();
-  var serviceAccountLookUp = gel('lookup.service_account');
-  serviceAccountLookUp.setAttribute(
-    'onclick',
-    "mousePositionSave(event); reflistOpen( 'service_account', 'not', 'cmdb_ci_cloud_service_account', '', 'false','QUERY:active=true', 'datacenter_typeLIKE" +
-      provider +
-      "', '')"
-  );
+    document.getElementById('sys_display.service_account').value = '';
+    var provider = gel('provider').value;
+    if (provider != 'AWS') $j('.region-container').hide();
+    var serviceAccountLookUp = gel('lookup.service_account');
+    serviceAccountLookUp.setAttribute(
+        'onclick',
+        "mousePositionSave(event); reflistOpen( 'service_account', 'not', 'cmdb_ci_cloud_service_account', '', 'false','QUERY:active=true', 'datacenter_typeLIKE" +
+        provider +
+        "', '')"
+    );
 }
 
 // set base URL for API call
 function setBaseUrl() {
-  serviceAccountSysId = gel('service_account').value;
-  var saGr = new GlideRecord('cmdb_ci_cloud_service_account');
-  saGr.get(serviceAccountSysId);
-  switch (gel('provider').value) {
-    case 'AZURE':
-      $j('#api_client_tab').removeClass('hidden');
-      $j('#baseUrl')
-        .text(
-          'https://management.azure.com/subscriptions/' +
-            saGr.account_id.toString()
-        )
-        .change();
-      break;
-    case 'VCENTER':
-      $j('#api_client_tab').removeClass('hidden');
-      $j('#baseUrl')
-        .text(saGr.datacenter_url.toString().replace('/sdk', '').trim())
-        .change();
-      break;
-    case 'AWS':
-      $j('#regions').empty();
-      $j('#baseUrl').text('').change();
-      getAWSRegion(serviceAccountSysId);
-      $j('#api_client_tab').addClass('hidden');
-      break;
-  }
+    serviceAccountSysId = gel('service_account').value;
+    var saGr = new GlideRecord('cmdb_ci_cloud_service_account');
+    saGr.get(serviceAccountSysId);
+    switch (gel('provider').value) {
+        case 'AZURE':
+            $j('#api_client_tab').removeClass('hidden');
+            $j('#baseUrl')
+                .text('https://management.azure.com/subscriptions/' + saGr.account_id.toString())
+                .change();
+            break;
+        case 'VCENTER':
+            $j('#api_client_tab').removeClass('hidden');
+            $j('#baseUrl').text(saGr.datacenter_url.toString().replace('/sdk', '').trim()).change();
+            break;
+        case 'AWS':
+			$j('#regions').empty();
+			getAWSRegion(serviceAccountSysId);
+			$j('#api_client_tab').removeClass('hidden');
+            break;
+    }
 }
 
 // get AWS regions used in requst url
 function getAWSRegion(serviceAccountSysId) {
-  var grAjax = new GlideAjax('MidServerUtil');
-  grAjax.addParam('sysparm_name', 'getAWSRegions');
-  grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
-  grAjax.getXMLAnswer(getResponse);
+    var grAjax = new GlideAjax('MidServerUtil');
+    grAjax.addParam('sysparm_name', 'getAWSRegions');
+    grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
+    grAjax.getXMLAnswer(getResponse);
 
-  function getResponse(response) {
-    $j('.region-container').css('display', 'block');
-    var regions = JSON.parse(response);
-    $j.each(regions, function (key, value) {
-      $j('#regions').append($j('<option></option>').text(value));
-    });
-  }
+    function getResponse(response) {
+		$j('#regions').removeClass('hidden');
+        $j('.region-container').css('display', 'block');
+        var regions = JSON.parse(response);
+		$j('#regions').append($j('<option></option>').text('Select'));
+        $j.each(regions, function(key, value) {
+            $j('#regions').append($j('<option></option>').text(value));
+        });
+		//$('#regions').prop('required',true);
+    }
+	
+}
+
+function setAWSBaseUrl() {
+	$j('#baseUrl').text('https://ec2.' + gel('regions').value + '.amazonaws.com').change();
 }
 
 // execute http request for midserver script include execution
 function onClickScripInclude() {
-  $j('#spinner').removeClass('hidden');
-  $j('#response').empty();
-  $j('#response_container').addClass('hidden');
-  var midServerName = gel('sys_display.mid_server').value;
-  var serviceAccountSysId = gel('service_account').value;
-  var script = gel('code').value;
-  var grAjax = new GlideAjax(providerScript[gel('provider').value]);
-  grAjax.addParam('sysparm_name', 'executeScriptInclude');
-  grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
-  grAjax.addParam('sysparm_mid', midServerName);
-  grAjax.addParam('sysparm_script', script);
-  if (currentProvider == 'AWS')
-    grAjax.addParam('sysparm_region', gel('regions').value);
-  grAjax.getXMLAnswer(getResponse);
+    $j('#spinner').removeClass('hidden');
+    $j('#response').empty();
+    $j('#response_container').addClass('hidden');
+    var midServerName = gel('sys_display.mid_server').value;
+    var serviceAccountSysId = gel('service_account').value;
+    var script = gel('code').value;
+    var grAjax = new GlideAjax(providerScript[gel('provider').value]);
+    grAjax.addParam('sysparm_name', 'executeScriptInclude');
+    grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
+    grAjax.addParam('sysparm_mid', midServerName);
+    grAjax.addParam('sysparm_script', script);
+    if (gel('provider').value == 'AWS') grAjax.addParam('sysparm_region', gel('regions').value);
+    grAjax.getXMLAnswer(getResponse);
 
-  function getResponse(response) {
-    $j('#spinner').addClass('hidden');
-    try {
-      var parsedResponse = JSON.parse(response);
-    } catch (e) {
-      $j('#response').text(response);
+    function getResponse(response) {
+        $j('#spinner').addClass('hidden');
+        try {
+            var parsedResponse = JSON.parse(response);
+        } catch (e) {
+            $j('#response').text(response);
+        }
+
+        $j('#response').text(JSON.stringify(parsedResponse, undefined, 4)).change();
+        $j('#response_container').removeClass('hidden');
     }
-
-    $j('#response').text(JSON.stringify(parsedResponse, undefined, 4)).change();
-    $j('#response_container').removeClass('hidden');
-  }
 }
 
 // execute api client call
 function onClickApi() {
-  $j('#spinner').removeClass('hidden');
-  $j('#response').empty();
-  $j('#response_container').addClass('hidden');
-  var midServerName = gel('sys_display.mid_server').value;
-  var serviceAccountSysId = gel('service_account').value;
-  var endpoint = gel('endpoint').value;
-  var method = gel('method').value;
-  var payload = gel('request_body').value;
-  var grAjax = new GlideAjax(providerScript[gel('provider').value]);
-  grAjax.addParam('sysparm_name', 'executeAPi');
-  grAjax.addParam('sysparm_method', method);
-  grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
-  grAjax.addParam('sysparm_mid', midServerName);
-  grAjax.addParam('sysparm_endpoint', endpoint);
-  if (payload) grAjax.addParam('sysparm_payload', payload);
-  grAjax.getXMLAnswer(getResponse);
+    $j('#spinner').removeClass('hidden');
+    $j('#response').empty();
+    $j('#response_container').addClass('hidden');
+    var midServerName = gel('sys_display.mid_server').value;
+    var serviceAccountSysId = gel('service_account').value;
+    var endpoint = gel('endpoint').value;
+    var method = gel('method').value;
+    var payload = $j('#jsonData').val() || "";
+	var baseUrl = $j('#baseUrl').text();
+    var grAjax = new GlideAjax(providerScript[gel('provider').value]);
+    grAjax.addParam('sysparm_name', 'executeAPi');
+    grAjax.addParam('sysparm_method', method);
+    grAjax.addParam('sysparm_serviceAccount', serviceAccountSysId);
+    grAjax.addParam('sysparm_mid', midServerName);
+    grAjax.addParam('sysparm_endpoint', endpoint);
+	grAjax.addParam('sysparm_baseUrl', baseUrl);
+	if (gel('provider').value == "AWS") grAjax.addParam('sysparm_region', gel('regions').value);
+    grAjax.addParam('sysparm_payload', payload);
+    grAjax.getXMLAnswer(getResponse);
 
-  function getResponse(response) {
-    $j('#spinner').addClass('hidden');
-    try {
-      var parsedResponse = JSON.parse(response);
-    } catch (e) {
-      $j('#response').text(response);
+    function getResponse(response) {
+        $j('#spinner').addClass('hidden');
+        try {
+            var parsedResponse = JSON.parse(response);
+        } catch (e) {
+            $j('#response').text(response);
+        }
+        $j('#response').text(JSON.stringify(parsedResponse, undefined, 4)).change();
+        $j('#response_container').removeClass('hidden');
     }
-    $j('#response').text(JSON.stringify(parsedResponse, undefined, 4)).change();
-    $j('#response_container').removeClass('hidden');
-  }
 }
 
 // formatting request body data (JSON)
 function prettifyJson() {
-  var ugly = $j('#jsonData').val();
-  try {
-    var obj = JSON.parse(ugly);
-    var pretty = JSON.stringify(obj, undefined, 4);
-    $j('#jsonData').val(pretty).change();
-  } catch (err) {
-    alert(err);
-  }
+    var ugly = $j('#jsonData').val();
+    try {
+        var obj = JSON.parse(ugly);
+        var pretty = JSON.stringify(obj, undefined, 4);
+        $j('#jsonData').val(pretty).change();
+    } catch (err) {
+        alert(err);
+    }
 }
 
 // empty response
 function clearResponse() {
-  $j('#response').empty();
-  $j('#response_container').addClass('hidden');
+    $j('#response').empty();
+    $j('#response_container').addClass('hidden');
 }
 ]]></client_script>
         <description/>
@@ -263,7 +267,7 @@ function clearResponse() {
                 completer="AJAXTableCompleter" query="nameLIKENone" onChange="setBaseUrl()" />
               <div class="region-container">
                 <label>Region:</label>
-                <select class="form-control" id="regions" hidden="true"></select>
+                <select class="form-control" id="regions" hidden="true" onChange="setAWSBaseUrl()"></select>
               </div>
             </div>
           </div>
@@ -387,13 +391,13 @@ function clearResponse() {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-20 12:06:18</sys_created_on>
         <sys_id>3b0bcc1407b63c109eebf48f7c1ed051</sys_id>
-        <sys_mod_count>493</sys_mod_count>
+        <sys_mod_count>540</sys_mod_count>
         <sys_name>cloud_rest_api</sys_name>
         <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
         <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_ui_page_3b0bcc1407b63c109eebf48f7c1ed051</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-12-13 13:38:33</sys_updated_on>
+        <sys_updated_on>2022-05-24 19:50:00</sys_updated_on>
     </sys_ui_page>
 </record_update>
