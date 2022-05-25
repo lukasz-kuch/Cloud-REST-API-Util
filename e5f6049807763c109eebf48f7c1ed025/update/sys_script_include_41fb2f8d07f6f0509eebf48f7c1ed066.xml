@@ -74,13 +74,13 @@ AzureMidServerRequest.prototype = Object.extendsObject(
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-23 12:09:42</sys_created_on>
         <sys_id>41fb2f8d07f6f0509eebf48f7c1ed066</sys_id>
-        <sys_mod_count>15</sys_mod_count>
+        <sys_mod_count>18</sys_mod_count>
         <sys_name>AzureMidServerRequest</sys_name>
-        <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
-        <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_script_include_41fb2f8d07f6f0509eebf48f7c1ed066</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-10-04 13:58:27</sys_updated_on>
+        <sys_updated_on>2022-04-26 10:49:23</sys_updated_on>
     </sys_script_include>
 </record_update>

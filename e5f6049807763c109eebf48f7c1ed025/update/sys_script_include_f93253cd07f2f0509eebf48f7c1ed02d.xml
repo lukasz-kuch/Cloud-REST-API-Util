@@ -9,106 +9,182 @@
         <name>MidServerUtil</name>
         <script><![CDATA[var MidServerUtil = Class.create();
 MidServerUtil.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
-  getServiceAccount: function (serviceAccountSysId) {
-    var saGR = new GlideRecord('cmdb_ci_cloud_service_account');
-    saGR.get(serviceAccountSysId);
+    getServiceAccount: function(serviceAccountSysId) {
+        var saGR = new GlideRecord('cmdb_ci_cloud_service_account');
+        saGR.get(serviceAccountSysId);
 
-    var creds = this._getCredentials(saGR.discovery_credentials);
+        var creds = this._getCredentials(saGR.discovery_credentials);
 
-    return {
-      account_id: saGR.account_id.toString(),
-      datacenter_url: saGR.datacenter_url.toString(),
-      credentials: creds
-    };
-  },
+        return {
+            account_id: saGR.account_id.toString(),
+            datacenter_url: saGR.datacenter_url.toString(),
+            credentials: creds
+        };
+    },
 
-  getAWSRegions: function () {
-    var regions = [];
-    var gr = new GlideRecord('cmp_discovery_ldc_config');
-    gr.addQuery('service_account', this.getParameter('sysparm_serviceAccount'));
-    gr.query();
-    while (gr.next()) {
-      regions.push(gr.getDisplayValue('ldc'));
-    }
-    return JSON.stringify(regions);
-  },
+    getAWSRegions: function() {
+        var regions = [];
+        var gr = new GlideRecord('cmp_discovery_ldc_config');
+        gr.addQuery('service_account', this.getParameter('sysparm_serviceAccount'));
+        gr.query();
+        while (gr.next()) {
+            regions.push(gr.getDisplayValue('ldc'));
+        }
+        return JSON.stringify(regions);
+    },
 
-  _getCredentials: function (credGR) {
-    var credsObj = {};
-    var credsAttr = [
-      'email',
-      'access_key',
-      'user_name',
-      'password',
-      'tenant_id',
-      'client_id',
-      'secret_key'
-    ];
-    credsAttr.forEach(function (attr) {
-      if (credGR[attr].toString()) {
-        credsObj[attr] = this._checkIfMasked(attr, credGR[attr].toString());
-      }
-    }, this);
-    return credsObj;
-  },
+    _getCredentials: function(credGR) {
+        var credsObj = {};
+        var credsAttr = [
+            'email',
+            'access_key',
+            'user_name',
+            'password',
+            'tenant_id',
+            'client_id',
+            'secret_key'
+        ];
+        credsAttr.forEach(function(attr) {
+            if (credGR[attr].toString()) {
+                credsObj[attr] = this._checkIfMasked(attr, credGR[attr].toString());
+            }
+        }, this);
+        return credsObj;
+    },
 
-  _checkIfMasked: function (type, item) {
-    var encrypter = new GlideEncrypter();
-    return type == 'password' || type == 'secret_key'
-      ? encrypter.decrypt(item)
-      : item;
-  },
+    _checkIfMasked: function(type, item) {
+        var encrypter = new GlideEncrypter();
+        return type == 'password' || type == 'secret_key' ?
+            encrypter.decrypt(item) :
+            item;
+    },
 
-  _getXMLResponse: function (name, currentDate) {
-    var date = currentDate.split(' ');
-    var ecc = new GlideRecord('ecc_queue');
-    ecc.orderByDesc('sys_created_on');
-    ecc.addEncodedQuery(
-      'sys_created_on>javascript:gs.dateGenerate("' +
-        date[0] +
-        '", "' +
-        date[1] +
-        '")'
-    );
-    ecc.addQuery('topic', 'JavascriptProbe');
-    ecc.addQuery('name', name);
-    ecc.addQuery('queue', 'input');
-    ecc.addQuery('state', 'ready');
-    ecc.query();
-    if (ecc.next()) {
-      var response = gs.getXMLText(ecc.payload, '//output');
-      return response;
-    } else {
-      return false;
-    }
-  },
+    _getXMLResponse: function(name, currentDate) {
+        var date = currentDate.split(' ');
+        var ecc = new GlideRecord('ecc_queue');
+        ecc.orderByDesc('sys_created_on');
+        ecc.addEncodedQuery(
+            'sys_created_on>javascript:gs.dateGenerate("' +
+            date[0] +
+            '", "' +
+            date[1] +
+            '")'
+        );
+        ecc.addQuery('topic', 'JavascriptProbe');
+        ecc.addQuery('name', name);
+        ecc.addQuery('queue', 'input');
+        ecc.addQuery('state', 'ready');
+        ecc.query();
+        if (ecc.next()) {
+            var response = gs.getXMLText(ecc.payload, '//output');
+            return response;
+        } else {
+            return false;
+        }
+    },
 
-  awaitEccResponse: function (probeName) {
-    var currentTime = gs.nowDateTime();
-    while (!this._getXMLResponse(probeName, currentTime)) {
-      gs.sleep(1000);
-    }
-    return this._getXMLResponse(probeName, currentTime);
-  },
+    awaitEccResponse: function(probeName) {
+        var currentTime = gs.nowDateTime();
+        while (!this._getXMLResponse(probeName, currentTime)) {
+            gs.sleep(1000);
+        }
+        return this._getXMLResponse(probeName, currentTime);
+    },
 
-  getProperty: function() {
-    return gs.getProperty(this.getParameter('sysparm_property_name'));
-  },
+    getProperty: function() {
+        return gs.getProperty(this.getParameter('sysparm_property_name'));
+    },
+	
+	getDateTimeStamp: function() {
+        var date; {
+            var gdt = new GlideDateTime();
+            var time = gdt.getTime();
+            var t = time.getByFormat("HHmmss");
+            var wd = (function() {
+                var map = {
+                    '1': 'Mon',
+                    '2': 'Tue',
+                    '3': 'Wed',
+                    '4': 'Thu',
+                    '5': 'Fri',
+                    '6': 'Sat',
+                    '7': 'Sun'
+                };
+                return map[gdt.getDayOfWeekUTC() + ''];
+            })();
+            var d = (function() {
+                var map = {
+                    '1': '01',
+                    '2': '02',
+                    '3': '03',
+                    '4': '04',
+                    '5': '05',
+                    '6': '06',
+                    '7': '07',
+                    '8': '08',
+                    '9': '09',
+                    '10': '10',
+                    '11': '11',
+                    '12': '12',
+                    '13': '13',
+                    '14': '14',
+                    '15': '15',
+                    '16': '16',
+                    '17': '17',
+                    '18': '18',
+                    '19': '19',
+                    '20': '20',
+                    '21': '21',
+                    '22': '22',
+                    '23': '23',
+                    '24': '24',
+                    '25': '25',
+                    '26': '26',
+                    '27': '27',
+                    '28': '28',
+                    '29': '29',
+                    '30': '30',
+                    '31': '31'
+                };
+                return map[gdt.getDayOfMonthUTC() + ''];
+            })();
 
-  type: 'MidServerUtil'
-});
-]]></script>
+            var m = (function() {
+                var map = {
+                    '1': '01',
+                    '2': '02',
+                    '3': '03',
+                    '4': '04',
+                    '5': '05',
+                    '6': '06',
+                    '7': '07',
+                    '8': '08',
+                    '9': '09',
+                    '10': '10',
+                    '11': '11',
+                    '12': '12'
+                };
+                return map[gdt.getMonthUTC() + ''];
+            })();
+            var y = gdt.getYearUTC();
+            date = y + m + d + 'T' + t + 'Z';
+        }
+        return date;
+    },
+
+    type: 'MidServerUtil'
+});]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-23 10:17:16</sys_created_on>
         <sys_id>f93253cd07f2f0509eebf48f7c1ed02d</sys_id>
-        <sys_mod_count>19</sys_mod_count>
+        <sys_mod_count>22</sys_mod_count>
         <sys_name>MidServerUtil</sys_name>
         <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
         <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_script_include_f93253cd07f2f0509eebf48f7c1ed02d</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-12-10 10:51:43</sys_updated_on>
+        <sys_updated_on>2022-05-21 13:52:24</sys_updated_on>
     </sys_script_include>
 </record_update>

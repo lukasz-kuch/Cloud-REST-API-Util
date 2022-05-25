@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="DELETE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.Crypto_Wrapper</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>Crypto_Wrapper</name>
+        <script><![CDATA[var Crypto_Wrapper = Class.create();
+Crypto_Wrapper.prototype = {
+    initialize: function() {},
+
+    runTest: function() {
+        return "OK";
+    },
+
+    Crypto: function() {
+        return new global.Crypto().CryptoJS;
+    },
+	
+    type: 'Crypto_Wrapper'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-13 09:22:13</sys_created_on>
+        <sys_id>ed957db3079301109eebf48f7c1ed052</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>Crypto_Wrapper</sys_name>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>sys_script_include_ed957db3079301109eebf48f7c1ed052</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-13 09:27:52</sys_updated_on>
+    </sys_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</application>
+        <file_path/>
+        <instance_id>5340b345dbd337484d2bac44d4961968</instance_id>
+        <instance_name>dev91500</instance_name>
+        <name>sys_script_include_ed957db3079301109eebf48f7c1ed052</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;public&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;global.Crypto_Wrapper&lt;/api_name&gt;&lt;caller_access/&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;description/&gt;&lt;name&gt;Crypto_Wrapper&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var Crypto_Wrapper = Class.create();
+Crypto_Wrapper.prototype = {
+    initialize: function() {},
+
+    runTest: function() {
+        return "OK";
+    },
+
+    Crypto: function() {
+        return new global.Crypto().CryptoJS;
+    },
+	
+    type: 'Crypto_Wrapper'
+};]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2022-05-13 09:22:13&lt;/sys_created_on&gt;&lt;sys_id&gt;ed957db3079301109eebf48f7c1ed052&lt;/sys_id&gt;&lt;sys_mod_count&gt;5&lt;/sys_mod_count&gt;&lt;sys_name&gt;Crypto_Wrapper&lt;/sys_name&gt;&lt;sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025"&gt;e5f6049807763c109eebf48f7c1ed025&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Cloud REST API Util"&gt;e5f6049807763c109eebf48f7c1ed025&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_ed957db3079301109eebf48f7c1ed052&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2022-05-13 09:27:52&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>-1314343958</payload_hash>
+        <record_name>Crypto_Wrapper</record_name>
+        <reverted_from/>
+        <source>29437816071845109eebf48f7c1ed01b</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-13 09:27:53</sys_created_on>
+        <sys_id>b8d7313b079301109eebf48f7c1ed00d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>180bcbef6620000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-13 09:27:53</sys_updated_on>
+        <type>Script Include</type>
+        <update_guid>30d7313b8b93011077c0b35cd7734c0d</update_guid>
+        <update_guid_history>30d7313b8b93011077c0b35cd7734c0d:-1314343958,b4a779f754930110dbc90cd3cc469cf0:1045302250,808735f777930110a2543fc0fd0dc3ae:-358512831,0996b57792930110d0e8c0140750b8b3:1497577176,5786757797930110683e1df07e611acb:1374892673,8686b5f3f993011052167b53dae2492c:-145539406</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-13 09:33:26</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_include">sys_script_include</sys_db_object>
+        <sys_id>17c9fbaa76cc44f083ddf121f2b32d84</sys_id>
+        <sys_metadata>ed957db3079301109eebf48f7c1ed052</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Crypto_Wrapper</sys_name>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_scope_delete display_value="">2a2a008bd8474e8f80003ca30e5ccfc9</sys_scope_delete>
+        <sys_update_name>sys_script_include_ed957db3079301109eebf48f7c1ed052</sys_update_name>
+        <sys_update_version display_value="sys_script_include_ed957db3079301109eebf48f7c1ed052">b8d7313b079301109eebf48f7c1ed00d</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-13 09:33:26</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

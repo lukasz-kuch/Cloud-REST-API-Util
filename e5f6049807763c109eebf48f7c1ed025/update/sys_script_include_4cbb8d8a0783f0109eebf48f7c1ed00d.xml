@@ -9,76 +9,79 @@
         <name>AWSMidServerRequest</name>
         <script><![CDATA[var AWSMidServerRequest = Class.create();
 AWSMidServerRequest.prototype = Object.extendsObject(
-  global.AbstractAjaxProcessor,
-  {
-    executeScriptInclude: function () {
-      var automation_api = new sn_automation.AutomationAPI();
-      var util = new MidServerUtil();
-      var serviceAccountData = util.getServiceAccount(
-        this.getParameter('sysparm_serviceAccount')
-      );
-      var probeName = 'AWSScriptIncludeRequest';
-      var loginParams = 'var params = new AWSLoginParams;';
-      var script = this.getParameter('sysparm_script');
-      var jspr = new JavascriptProbe(this.getParameter('sysparm_mid'));
-      jspr.setName(probeName);
-      jspr.setJavascript(loginParams + script);
-      jspr.addParameter('identity', serviceAccountData.credentials.access_key);
-      jspr.addParameter(
-        'secretKey',
-        automation_api.encrypt(serviceAccountData.credentials.secret_key)
-      );
-      jspr.addParameter('region', this.getParameter('sysparm_region'));
-      jspr.addParameter('skip_sensor', 'true');
-      jspr.create();
+    global.AbstractAjaxProcessor, {
+        executeScriptInclude: function() {
+            var automation_api = new sn_automation.AutomationAPI();
+            var util = new MidServerUtil();
+            var serviceAccountData = util.getServiceAccount(
+                this.getParameter('sysparm_serviceAccount')
+            );
+            var probeName = 'AWSScriptIncludeRequest';
+            var loginParams = 'var params = new AWSLoginParams;';
+            var script = this.getParameter('sysparm_script');
+            var jspr = new JavascriptProbe(this.getParameter('sysparm_mid'));
+            jspr.setName(probeName);
+            jspr.setJavascript(loginParams + script);
+            jspr.addParameter('identity', serviceAccountData.credentials.access_key);
+            jspr.addParameter(
+                'secretKey',
+                automation_api.encrypt(serviceAccountData.credentials.secret_key)
+            );
+            jspr.addParameter('region', this.getParameter('sysparm_region'));
+            jspr.addParameter('skip_sensor', 'true');
+            jspr.create();
 
-      return util.awaitEccResponse(probeName);
-    },
+            return util.awaitEccResponse(probeName);
+        },
 
-    executeAPi: function () {
-      var automation_api = new sn_automation.AutomationAPI();
-      var util = new MidServerUtil();
-      var serviceAccountData = util.getServiceAccount(
-        this.getParameter('sysparm_serviceAccount')
-      );
-      var probeName = 'AzureRestApi';
-      var script =
-        'var req = new AzureMidApiRequest(); res = req.' +
-        this.getParameter('sysparm_method') +
-        '(' +
-        this.getParameter('sysparm_payload') +
-        ');';
-      var jspr = new JavascriptProbe(this.getParameter('sysparm_mid'));
-      jspr.setName(probeName);
-      jspr.setJavascript(script);
-      jspr.addParameter('subscriptionId', serviceAccountData.account_id);
-      jspr.addParameter('tenantId', serviceAccountData.credentials.tenant_id);
-      jspr.addParameter('clientId', serviceAccountData.credentials.client_id);
-      jspr.addParameter('endpoint', this.getParameter('sysparm_endpoint'));
-      jspr.addParameter(
-        'secretKey',
-        automation_api.encrypt(serviceAccountData.credentials.secret_key)
-      );
-      jspr.addParameter('skip_sensor', 'true');
-      jspr.create();
-
-      return util.awaitEccResponse(probeName);
-    },
-    type: 'AWSMidServerRequest'
-  }
-);
-]]></script>
+        executeAPi: function() {
+			var util = new MidServerUtil();
+			var dateTimeStamp = util.getDateTimeStamp();
+            var serviceAccountData = util.getServiceAccount(
+                this.getParameter('sysparm_serviceAccount')
+            );
+			var params = {
+				accessId: serviceAccountData.credentials.access_key,
+				secretKey: serviceAccountData.credentials.secret_key,
+				region: this.getParameter('sysparm_region'),
+				endpoint: this.getParameter('sysparm_endpoint'),
+				baseUrl: this.getParameter('sysparm_baseUrl'),
+				date: dateTimeStamp
+			};
+			var awsUtil = new AWSSigningRequest(JSON.stringify(params), this.getParameter('sysparm_payload'));
+			var auth = awsUtil.setAuthorization();
+            var probeName = 'AWSRestApi';
+            var script =
+                'var req = new AWSMidApiRequest(); res = req.' +
+                this.getParameter('sysparm_method') +
+                '();';
+            var jspr = new JavascriptProbe(this.getParameter('sysparm_mid'));
+            jspr.setName(probeName);
+            jspr.setJavascript(script);
+            jspr.addParameter('authorization', auth);
+			jspr.addParameter('baseUrl', params.baseUrl);
+			jspr.addParameter('endpoint', params.endpoint);
+			jspr.addParameter('date', dateTimeStamp);
+            jspr.addParameter('payload', this.getParameter('sysparm_payload'));
+            jspr.addParameter('skip_sensor', 'true');
+            jspr.create();
+			
+            return util.awaitEccResponse(probeName);
+        },
+        type: 'AWSMidServerRequest'
+    }
+);]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-10-08 13:19:28</sys_created_on>
         <sys_id>4cbb8d8a0783f0109eebf48f7c1ed00d</sys_id>
-        <sys_mod_count>8</sys_mod_count>
+        <sys_mod_count>30</sys_mod_count>
         <sys_name>AWSMidServerRequest</sys_name>
         <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
         <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>sys_script_include_4cbb8d8a0783f0109eebf48f7c1ed00d</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-10-18 10:43:14</sys_updated_on>
+        <sys_updated_on>2022-05-24 18:44:24</sys_updated_on>
     </sys_script_include>
 </record_update>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="ecc_agent_script_include">
+    <ecc_agent_script_include action="DELETE">
+        <active>true</active>
+        <description/>
+        <name>AWSSigningRequest</name>
+        <script><![CDATA[var AWSSigningRequest = Class.create();
+AWSSigningRequest.prototype = {
+    initialize: function(params, payload) {
+        this.parameters = JSON.parse(params);
+        this.Payload = payload;
+        this.UriPath = '/';
+        this.Endpoint = this.parameters.endpoint;
+        this.CanonicalQueryString = this.Endpoint.substring(this.Endpoint.indexOf('?') + 1);
+        this.Date = this.parameters.date;
+        this.AccessID = this.parameters.accessId;
+        this.Host = "https://ec2." + this.parameters.region + ".amazonaws.com".substring(8);
+        this.Service = "ec2";
+        this.Region = this.parameters.region;
+        this.SecretKey = pathis.parametersrams.secretKey;
+        this.Scope = this.Date.substring(0, 8) + '/' + this.Region + '/' + this.Service + '/' + 'aws4_request';
+        this.SignedHeaders = 'host;x-amz-date';
+        this.CryptoJS = new x_fstfs_fj_cmp.Crypto().CryptoJS;
+
+    },
+
+    createCanonicalRequest: function() {
+        var hashedPayload = this.CryptoJS.SHA256(this.Payload).toString(this.CryptoJS.enc.Hex);
+        var hash = hashedPayload.toLowerCase();
+        var CanonicalHeaders = this.createCanonicalHeader();
+        //var CanonicalURI =  encodeURIComponent(this.UriPath);
+        return 'GET' + '\n' + this.UriPath + '\n' + this.CanonicalQueryString + '\n' + CanonicalHeaders + '\n' + this.SignedHeaders + '\n' + hash;
+    },
+
+    createCanonicalHeader: function() {
+        var headers = {
+            'host': this.Host,
+            'x-amz-date': this.Date
+        };
+        return Object.keys(headers).map(function(key) {
+            return key + ':' + headers[key];
+        }).join('\n').concat('\n');
+    },
+
+    getStringToSignIn: function() {
+        var hashCanonical = this.CryptoJS.SHA256(this.createCanonicalRequest()).toString(this.CryptoJS.enc.Hex);
+        var hashLower = hashCanonical.toLowerCase();
+        return 'AWS4-HMAC-SHA256' + '\n' + this.Date + '\n' + this.Scope + '\n' + hashLower;
+    },
+
+    getSigningKey: function() {
+        var kDate = this.CryptoJS.HmacSHA256(this.Date.substring(0, 8), "AWS4" + encodeURI(this.SecretKey));
+        var kRegion = this.CryptoJS.HmacSHA256(this.Region, kDate);
+        var kService = this.CryptoJS.HmacSHA256(this.Service, kRegion);
+        var kSigning = this.CryptoJS.HmacSHA256("aws4_request", kService);
+
+        return kSigning;
+    },
+
+    getSignature: function() {
+        var signKey = this.getSigningKey();
+        var stringToSign = this.getStringToSignIn();
+        return this.CryptoJS.algo.HMAC.create(this.CryptoJS.algo.SHA256, signKey).update(stringToSign).finalize().toString(this.CryptoJS.enc.Hex);
+    },
+
+    setAuthorization: function() {
+        var signature = this.getSignature();
+        return 'AWS4-HMAC-SHA256 Credential=' + this.AccessID + '/' + this.Scope + ', SignedHeaders=' + this.SignedHeaders + ', Signature=' + signature;
+    },
+
+    type: 'AWSSigningRequest'
+};]]></script>
+        <sys_class_name>ecc_agent_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-21 06:07:58</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>dbb65252076b05509eebf48f7c1ed0e3</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>AWSSigningRequest</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_update_name>ecc_agent_script_include_dbb65252076b05509eebf48f7c1ed0e3</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-21 14:38:31</sys_updated_on>
+    </ecc_agent_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</application>
+        <file_path/>
+        <instance_id>5340b345dbd337484d2bac44d4961968</instance_id>
+        <instance_name>dev91500</instance_name>
+        <name>ecc_agent_script_include_dbb65252076b05509eebf48f7c1ed0e3</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update sys_domain="global" table="ecc_agent_script_include"&gt;&lt;ecc_agent_script_include action="INSERT_OR_UPDATE"&gt;&lt;active&gt;true&lt;/active&gt;&lt;description/&gt;&lt;name&gt;AWSSigningRequest&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var AWSSigningRequest = Class.create();
+AWSSigningRequest.prototype = {
+    initialize: function(params, payload) {
+        this.parameters = JSON.parse(params);
+        this.Payload = payload;
+        this.UriPath = '/';
+        this.Endpoint = this.parameters.endpoint;
+        this.CanonicalQueryString = this.Endpoint.substring(this.Endpoint.indexOf('?') + 1);
+        this.Date = this.parameters.date;
+        this.AccessID = this.parameters.accessId;
+        this.Host = "https://ec2." + this.parameters.region + ".amazonaws.com".substring(8);
+        this.Service = "ec2";
+        this.Region = this.parameters.region;
+        this.SecretKey = pathis.parametersrams.secretKey;
+        this.Scope = this.Date.substring(0, 8) + '/' + this.Region + '/' + this.Service + '/' + 'aws4_request';
+        this.SignedHeaders = 'host;x-amz-date';
+        this.CryptoJS = new x_fstfs_fj_cmp.Crypto().CryptoJS;
+
+    },
+
+    createCanonicalRequest: function() {
+        var hashedPayload = this.CryptoJS.SHA256(this.Payload).toString(this.CryptoJS.enc.Hex);
+        var hash = hashedPayload.toLowerCase();
+        var CanonicalHeaders = this.createCanonicalHeader();
+        //var CanonicalURI =  encodeURIComponent(this.UriPath);
+        return 'GET' + '\n' + this.UriPath + '\n' + this.CanonicalQueryString + '\n' + CanonicalHeaders + '\n' + this.SignedHeaders + '\n' + hash;
+    },
+
+    createCanonicalHeader: function() {
+        var headers = {
+            'host': this.Host,
+            'x-amz-date': this.Date
+        };
+        return Object.keys(headers).map(function(key) {
+            return key + ':' + headers[key];
+        }).join('\n').concat('\n');
+    },
+
+    getStringToSignIn: function() {
+        var hashCanonical = this.CryptoJS.SHA256(this.createCanonicalRequest()).toString(this.CryptoJS.enc.Hex);
+        var hashLower = hashCanonical.toLowerCase();
+        return 'AWS4-HMAC-SHA256' + '\n' + this.Date + '\n' + this.Scope + '\n' + hashLower;
+    },
+
+    getSigningKey: function() {
+        var kDate = this.CryptoJS.HmacSHA256(this.Date.substring(0, 8), "AWS4" + encodeURI(this.SecretKey));
+        var kRegion = this.CryptoJS.HmacSHA256(this.Region, kDate);
+        var kService = this.CryptoJS.HmacSHA256(this.Service, kRegion);
+        var kSigning = this.CryptoJS.HmacSHA256("aws4_request", kService);
+
+        return kSigning;
+    },
+
+    getSignature: function() {
+        var signKey = this.getSigningKey();
+        var stringToSign = this.getStringToSignIn();
+        return this.CryptoJS.algo.HMAC.create(this.CryptoJS.algo.SHA256, signKey).update(stringToSign).finalize().toString(this.CryptoJS.enc.Hex);
+    },
+
+    setAuthorization: function() {
+        var signature = this.getSignature();
+        return 'AWS4-HMAC-SHA256 Credential=' + this.AccessID + '/' + this.Scope + ', SignedHeaders=' + this.SignedHeaders + ', Signature=' + signature;
+    },
+
+    type: 'AWSSigningRequest'
+};]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;ecc_agent_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2022-05-21 06:07:58&lt;/sys_created_on&gt;&lt;sys_domain&gt;global&lt;/sys_domain&gt;&lt;sys_domain_path&gt;/&lt;/sys_domain_path&gt;&lt;sys_id&gt;dbb65252076b05509eebf48f7c1ed0e3&lt;/sys_id&gt;&lt;sys_mod_count&gt;5&lt;/sys_mod_count&gt;&lt;sys_name&gt;AWSSigningRequest&lt;/sys_name&gt;&lt;sys_overrides/&gt;&lt;sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025"&gt;e5f6049807763c109eebf48f7c1ed025&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Cloud REST API Util"&gt;e5f6049807763c109eebf48f7c1ed025&lt;/sys_scope&gt;&lt;sys_update_name&gt;ecc_agent_script_include_dbb65252076b05509eebf48f7c1ed0e3&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2022-05-21 14:38:31&lt;/sys_updated_on&gt;&lt;/ecc_agent_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>-1498357873</payload_hash>
+        <record_name>AWSSigningRequest</record_name>
+        <reverted_from/>
+        <source>29437816071845109eebf48f7c1ed01b</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-21 14:38:32</sys_created_on>
+        <sys_id>5dabc4e6072b45509eebf48f7c1ed072</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>180e70e3e560000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-21 14:38:32</sys_updated_on>
+        <type>MID Server Script Include</type>
+        <update_guid>91abc4e6d72b455014fd7aeb351d9d72</update_guid>
+        <update_guid_history>91abc4e6d72b455014fd7aeb351d9d72:-1498357873,ad48ccaacce74550162c10f80fc616a0:-1937586065,5da0e61a07ab055091963dc7c0d77dc5:1315362383,7680e21afbab0550c78f7b50ede663e4:-371065063,f1d616d22d6b055053e58a5a4fc87d8d:1315362383,5ac612d25b6b05502626ba5fcd9b060c:1495027713</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="AWSSigningRequest">cf33502a076b45509eebf48f7c1ed019</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-05-21 15:11:40</sys_created_on>
+        <sys_db_object display_value="" name="ecc_agent_script_include">ecc_agent_script_include</sys_db_object>
+        <sys_id>0c0cb1e0709f4b2e9b46b0383bc16dc4</sys_id>
+        <sys_metadata>dbb65252076b05509eebf48f7c1ed0e3</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>AWSSigningRequest</sys_name>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_scope_delete display_value="">2a2a008bd8474e8f80003ca30e5ccfc9</sys_scope_delete>
+        <sys_update_name>ecc_agent_script_include_dbb65252076b05509eebf48f7c1ed0e3</sys_update_name>
+        <sys_update_version display_value="ecc_agent_script_include_dbb65252076b05509eebf48f7c1ed0e3">5dabc4e6072b45509eebf48f7c1ed072</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-05-21 15:11:40</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
