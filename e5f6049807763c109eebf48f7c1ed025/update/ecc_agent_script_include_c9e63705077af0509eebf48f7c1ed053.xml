@@ -28,15 +28,15 @@ AzureMidApiRequest.prototype = {
         return responseBody;
     },
 
-    POST: function() {
-        var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
-        request.addHeader("Authorization", this.getToken());
-        request.addHeader("Content-Type", "application/json");
-        var response = request.post();
-        var responseBody = this.getResponse(response);
+//     POST: function() {
+//         var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
+//         request.addHeader("Authorization", this.getToken());
+//         request.addHeader("Content-Type", "application/json");
+//         var response = request.post();
+//         var responseBody = this.getResponse(response);
 
-        return responseBody;
-    },
+//         return responseBody;
+//     },
 
     PUT: function() {
         var request = new this.HTTPRequest(this.baseUrl + this.endpoint);
@@ -109,7 +109,7 @@ AzureMidApiRequest.prototype = {
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>c9e63705077af0509eebf48f7c1ed053</sys_id>
-        <sys_mod_count>12</sys_mod_count>
+        <sys_mod_count>13</sys_mod_count>
         <sys_name>AzureMidApiRequest</sys_name>
         <sys_overrides/>
         <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
@@ -117,6 +117,6 @@ AzureMidApiRequest.prototype = {
         <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>ecc_agent_script_include_c9e63705077af0509eebf48f7c1ed053</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2022-05-25 05:47:24</sys_updated_on>
+        <sys_updated_on>2022-05-25 06:01:00</sys_updated_on>
     </ecc_agent_script_include>
 </record_update>

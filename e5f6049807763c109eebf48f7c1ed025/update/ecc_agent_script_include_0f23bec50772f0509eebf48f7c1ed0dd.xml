@@ -6,114 +6,117 @@
         <script><![CDATA[var VsphereMidApiRequest = Class.create();
 
 VsphereMidApiRequest.prototype = {
-  initialize: function () {
-    this.baseUrl = probe.getParameter("baseUrl").replace("/sdk", "").trim();
-    this.endpoint = probe.getParameter("endpoint");
-    this.userName = probe.getParameter("username");
-    this.password = probe.getParameter("password");
-    this.sessionId = this.login();
-  },
+    initialize: function() {
+        this.baseUrl = probe.getParameter("baseUrl").replace("/sdk", "").trim();
+        this.endpoint = probe.getParameter("endpoint");
+        this.userName = probe.getParameter("username");
+        this.password = probe.getParameter("password");
+		this.payload = probe.getParameter("payload");
+        this.sessionId = this.login();
+    },
 
-  GET: function () {
-    var response;
-    var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
-    request.addHeader("vmware-api-session-id", this.sessionId);
-    request.addHeader("Content-Type", "application/json");
-    response = request.get();
-    var responseBody = this.getResponse(response);
-    return responseBody;
-  },
+    GET: function() {
+        var response;
+        var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
+        request.addHeader("vmware-api-session-id", this.sessionId);
+        request.addHeader("Content-Type", "application/json");
+        response = request.get();
+        var responseBody = this.getResponse(response);
+        return responseBody;
+    },
 
-  PUT: function (payload) {
-    var response;
-    var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
-    request.addHeader("vmware-api-session-id", this.sessionId);
-    request.addHeader("Content-Type", "application/json");
-    response = request.put(payload);
-    var responseBody = this.getResponse(response);
-    return responseBody;
-  },
+//     PUT: function(payload) {
+//         var response;
+//         var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
+//         request.addHeader("vmware-api-session-id", this.sessionId);
+//         request.addHeader("Content-Type", "application/json");
+//         response = request.put(payload);
+//         var responseBody = this.getResponse(response);
+//         return responseBody;
+//     },
 
-  POST: function (payload) {
-    var response;
-    var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
-    request.addHeader("vmware-api-session-id", this.sessionId);
-    request.addHeader("Content-Type", "application/json");
-    response = request.post(payload);
-    var responseBody = this.getResponse(response);
-    return responseBody;
-  },
+    POST: function() {
+        var response;
+        var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
+        request.addHeader("vmware-api-session-id", this.sessionId);
+        request.addHeader("Content-Type", "application/json");
+        response = request.post(this.payload);
+        var responseBody = this.getResponse(response);
+        return responseBody;
+    },
 
-  PATCH: function (payload) {
-    var response;
-    var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
-    request.addHeader("vmware-api-session-id", this.sessionId);
-    request.addHeader("Content-Type", "application/json");
-    response = vmwareRequest.patch(payload);
-    var responseBody = this.getResponse(response);
-    return responseBody;
-  },
+    PATCH: function() {
+        var response;
+        var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
+        request.addHeader("vmware-api-session-id", this.sessionId);
+        request.addHeader("Content-Type", "application/json");
+        response = vmwareRequest.patch(this.payload);
+        var responseBody = this.getResponse(response);
+        return responseBody;
+    },
 
-  DELETE: function () {
-    var response;
-    var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
-    request.addHeader("vmware-api-session-id", this.sessionId);
-    request.addHeader("Content-Type", "application/json");
-    response = request.del();
-    var responseBody = this.getResponse(response);
-    return responseBody;
-  },
+    DELETE: function() {
+        var response;
+        var request = this.invokeRequest(encodeURI(this.baseUrl + this.endpoint));
+        request.addHeader("vmware-api-session-id", this.sessionId);
+        request.addHeader("Content-Type", "application/json");
+        response = request.del();
+        var responseBody = this.getResponse(response);
+        return responseBody;
+    },
 
-  invokeRequest: function (baseUrl) {
-    var request = new Packages.com.glide.communications.HTTPRequest(baseUrl);
-    return request;
-  },
+    invokeRequest: function(baseUrl) {
+        var request = new Packages.com.glide.communications.HTTPRequest(baseUrl);
+        return request;
+    },
 
-  getResponse: function (response) {
-    var jsonObj;
-    var status = response.getStatusCode();
-    var responseBody = JSON.parse(response.getBody());
-    if (status < "200" || status >= "300") {
-      return JSON.stringify({
-        "Failed with status code": status,
-        ErrorMessage: responseBody,
-      });
-    } else {
-      jsonObj = responseBody ? responseBody : "";
-      return JSON.stringify(jsonObj);
-    }
-  },
+    getResponse: function(response) {
+        var jsonObj;
+        var status = response.getStatusCode();
+        var responseBody = JSON.parse(response.getBody());
+        if (status < "200" || status >= "300") {
+            return JSON.stringify({
+                "Failed with status code": status,
+                ErrorMessage: responseBody,
+            });
+        } else {
+            jsonObj = responseBody ? responseBody : "";
+            return JSON.stringify({
+                "status code": status,
+                response: jsonObj
+            });
+        }
+    },
 
-  login: function () {
-    var StringUtil = Packages.com.glide.util.StringUtil;
-    var basicAuth =
-      "Basic " + StringUtil.base64Encode(this.userName + ":" + this.password);
-    var baseUrlURL = this.baseUrl + "/rest/com/vmware/cis/session";
-    var request = new Packages.com.glide.communications.HTTPRequest(baseUrlURL);
-    request.addHeader("Authorization", basicAuth);
-    request.addHeader("Content-Type", "application/json");
-    var authResponse = request.post({});
-    var responseBody = authResponse.getBody();
-    var jsonObj = JSON.parse(responseBody);
-    return jsonObj.value;
-  },
-  type: "VsphereMidApiRequest",
-};
-]]></script>
+    login: function() {
+        var StringUtil = Packages.com.glide.util.StringUtil;
+        var basicAuth =
+            "Basic " + StringUtil.base64Encode(this.userName + ":" + this.password);
+        var baseUrlURL = this.baseUrl + "/rest/com/vmware/cis/session";
+        var request = new Packages.com.glide.communications.HTTPRequest(baseUrlURL);
+        request.addHeader("Authorization", basicAuth);
+        request.addHeader("Content-Type", "application/json");
+        var authResponse = request.post({});
+        var responseBody = authResponse.getBody();
+        var jsonObj = JSON.parse(responseBody);
+        return jsonObj.value;
+    },
+    type: "VsphereMidApiRequest",
+};]]></script>
         <sys_class_name>ecc_agent_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-09-23 08:01:44</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>0f23bec50772f0509eebf48f7c1ed0dd</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>6</sys_mod_count>
         <sys_name>VsphereMidApiRequest</sys_name>
         <sys_overrides/>
-        <sys_package display_value="MID Server API Client" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
+        <sys_package display_value="Cloud REST API Util" source="e5f6049807763c109eebf48f7c1ed025">e5f6049807763c109eebf48f7c1ed025</sys_package>
         <sys_policy/>
-        <sys_scope display_value="MID Server API Client">e5f6049807763c109eebf48f7c1ed025</sys_scope>
+        <sys_scope display_value="Cloud REST API Util">e5f6049807763c109eebf48f7c1ed025</sys_scope>
         <sys_update_name>ecc_agent_script_include_0f23bec50772f0509eebf48f7c1ed0dd</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-09-23 13:38:46</sys_updated_on>
+        <sys_updated_on>2022-05-25 07:04:05</sys_updated_on>
     </ecc_agent_script_include>
 </record_update>
